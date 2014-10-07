@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7E75028D19D93FAD0093B089 /* appDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E75028C19D93FAD0093B089 /* appDetailViewController.m */; };
 		7EFF6D8319D41B8A007EE540 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7EFF6D8219D41B8A007EE540 /* Foundation.framework */; };
 		7EFF6D8519D41B8A007EE540 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7EFF6D8419D41B8A007EE540 /* CoreGraphics.framework */; };
 		7EFF6D8719D41B8A007EE540 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7EFF6D8619D41B8A007EE540 /* UIKit.framework */; };
@@ -34,6 +35,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		7E75028B19D93FAD0093B089 /* appDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = appDetailViewController.h; sourceTree = "<group>"; };
+		7E75028C19D93FAD0093B089 /* appDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = appDetailViewController.m; sourceTree = "<group>"; };
 		7EFF6D7F19D41B8A007EE540 /* iTune Application Assignment One.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "iTune Application Assignment One.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		7EFF6D8219D41B8A007EE540 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		7EFF6D8419D41B8A007EE540 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -113,6 +116,8 @@
 			isa = PBXGroup;
 			children = (
 				7EFF6D9119D41B8A007EE540 /* AppDelegate.h */,
+				7E75028B19D93FAD0093B089 /* appDetailViewController.h */,
+				7E75028C19D93FAD0093B089 /* appDetailViewController.m */,
 				7EFF6D9219D41B8A007EE540 /* AppDelegate.m */,
 				7EFF6D9419D41B8A007EE540 /* Main.storyboard */,
 				7EFF6D9719D41B8A007EE540 /* ViewController.h */,
@@ -252,6 +257,7 @@
 				7EFF6D9919D41B8A007EE540 /* ViewController.m in Sources */,
 				7EFF6D9319D41B8A007EE540 /* AppDelegate.m in Sources */,
 				7EFF6D8F19D41B8A007EE540 /* main.m in Sources */,
+				7E75028D19D93FAD0093B089 /* appDetailViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -456,6 +462,7 @@
 				7EFF6DB319D41B8A007EE540 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		7EFF6DB419D41B8A007EE540 /* Build configuration list for PBXNativeTarget "iTune Application Assignment OneTests" */ = {
 			isa = XCConfigurationList;
@@ -464,6 +471,7 @@
 				7EFF6DB619D41B8A007EE540 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
