@@ -7,7 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "Reachability.h"
 
 @interface ViewController : UIViewController <UITableViewDataSource, UITableViewDelegate>
 
+-(NSString *) dataFilePath ;
+-(void)readPlist ;
+-(void)writePlist ;
+-(BOOL)isConnected;
 @end

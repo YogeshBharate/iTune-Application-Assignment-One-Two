@@ -31,6 +31,7 @@ NSMutableArray *arrayOfCategory;
 NSMutableArray *arrayOfLink;
 NSMutableArray *arrayOfRights;
 NSMutableArray *readArray;
+bool deviceIsConnected ;
 
 UIImage *largeImage ;
 
@@ -38,6 +39,7 @@ UIImage *largeImage ;
 {
     [super viewDidLoad];
     
+    self.edgesForExtendedLayout = UIRectEdgeNone ;
     // Allocated all array variables
     arrayOfLabelNames       = [[NSMutableArray alloc] init];
     arrayOfImageIconURL     = [[NSMutableArray alloc] init];
@@ -52,16 +54,26 @@ UIImage *largeImage ;
     
     [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"SimpleIdentifier"];
   
-        NSLog(@"Internet Connection is available");
-    dispatch_async(iTuneBgQueue ,^{
-        NSData *dataiTune = [NSData dataWithContentsOfURL:iTuneJSONURL];
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self fetchiTuneData:dataiTune];
+    if(![self isConnected])
+    {
+        // code for offline
+        deviceIsConnected = NO;
+        NSLog(@"Internet Connection is unavailable");
+    }
+    else
+    {
+        deviceIsConnected = YES;
+        NSLog(@"Internet connection is available");
+        dispatch_async(iTuneBgQueue ,^{
+            NSData *dataiTune = [NSData dataWithContentsOfURL:iTuneJSONURL];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self fetchiTuneData:dataiTune];
+            });
         });
-//        [self performSelectorOnMainThread:@selector(fetchiTuneData:) withObject:dataiTune waitUntilDone:YES];
-    });
-  
+    }
+    
     [self.tableView flashScrollIndicators];
+    [self dataFilePath];
 }
 
 - (void)didReceiveMemoryWarning
@@ -80,16 +92,20 @@ UIImage *largeImage ;
     NSString *simpleIdentifier = @"SimpleIdentifier";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:simpleIdentifier forIndexPath:indexPath];
     
+    if(cell == nil)
+    {
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:simpleIdentifier];
+    }
+    
     UIImage *image1 = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:[arrayOfImageIconURL objectAtIndex:indexPath.row]]]];
     
     cell.imageView.image = image1 ;
     cell.textLabel.text = [arrayOfLabelNames objectAtIndex:indexPath.row];
-    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator ;
 
     return cell ;
 }
 
-- (void) fetchiTuneData:(NSData *)responseData
+- (void)fetchiTuneData:(NSData *)responseData
 {
     NSError *erroriTune;
     NSDictionary *jsoniTune = [NSJSONSerialization JSONObjectWithData:responseData options:kNilOptions error:&erroriTune];
@@ -146,6 +162,8 @@ UIImage *largeImage ;
     }
     
     [self.tableView reloadData];
+    [self writePlist];
+    [self readPlist];
 }
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
@@ -178,6 +196,47 @@ UIImage *largeImage ;
     [detailViewController setRight:rights];
 
     [self.navigationController pushViewController:detailViewController animated:YES];
+}
+
+-(NSString *)dataFilePath
+{
+    NSArray *path = NSSearchPathForDirectoriesInDomains(NSDocumentationDirectory, NSUserDomainMask, YES);
+    NSString *documentDirectory = [path objectAtIndex:0];
+    
+    return [documentDirectory stringByAppendingPathComponent:@"dataBackup.plist"];
+}
+
+
+-(void)writePlist
+{
+    NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
+    
+    [dict setObject:arrayOfLabelNames forKey:@"Label Names"];
+    [dict setObject:arrayOfArtistName forKey:@"Artist Names"];
+    [dict setObject:arrayOfPrices forKey:@"Prices"];
+    [dict setObject:arrayOfReleaseDate forKey:@"Release Date"];
+    [dict setObject:arrayOfCategory forKey:@"App Categories"];
+    [dict setObject:arrayOfLink forKey:@"URL Links"];
+    [dict setObject:arrayOfRights forKey:@"App Rights"];
+    
+    [dict writeToFile:[self dataFilePath] atomically:YES];
+}
+
+-(void)readPlist
+{
+    NSString *path = [self dataFilePath];
+    
+    if([[NSFileManager defaultManager] fileExistsAtPath:path])
+    {
+        readArray = [[NSMutableArray alloc] initWithContentsOfFile:path];
+    }
+}
+
+-(BOOL)isConnected
+{
+    Reachability *reachability = [Reachability reachabilityForInternetConnection];
+    NetworkStatus networkStatus = [reachability currentReachabilityStatus];
+    return networkStatus!=NotReachable ;
 }
 
 @end
