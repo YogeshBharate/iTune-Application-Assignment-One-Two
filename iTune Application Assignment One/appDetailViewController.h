@@ -10,23 +10,27 @@
 
 @interface appDetailViewController : UIViewController
 {
-    NSString *imageDetails  ;
-    NSString *labelDetails  ;
-    NSString *artistDetails ;
-    NSString *categoryDetails ;
+    NSString *imageDetails      ;
+    NSString *labelDetails      ;
+    NSString *artistDetails     ;
+    NSString *categoryDetails   ;
     NSString *releaseDateDetails;
-    NSString *priceDetails  ;
-    NSString *rightsDetails ;
-    NSString *linkDetails ;
+    NSString *priceDetails      ;
+    NSString *rightsDetails     ;
+    NSString *linkDetails       ;
+    NSURL    *offlineImage      ;
 }
-@property (weak, nonatomic) IBOutlet UIImageView *bigImage;
-@property (weak, nonatomic) IBOutlet UILabel *bigLabel;
-@property (weak, nonatomic) IBOutlet UILabel *artistLabel;
-@property (weak, nonatomic) IBOutlet UILabel *categoryLabel;
-@property (weak, nonatomic) IBOutlet UILabel *releaseDateLabel;
-@property (weak, nonatomic) IBOutlet UILabel *priceLabel;
-@property (weak, nonatomic) IBOutlet UILabel *linkLabel;
-@property (weak, nonatomic) IBOutlet UILabel *rightsLabel;
+@property (weak, nonatomic) IBOutlet UIImageView    *bigImage           ;
+@property (weak, nonatomic) IBOutlet UILabel        *bigLabel           ;
+@property (weak, nonatomic) IBOutlet UILabel        *artistLabel        ;
+@property (weak, nonatomic) IBOutlet UILabel        *categoryLabel      ;
+@property (weak, nonatomic) IBOutlet UILabel        *releaseDateLabel   ;
+@property (weak, nonatomic) IBOutlet UILabel        *priceLabel         ;
+@property (weak, nonatomic) IBOutlet UILabel        *linkLabel          ;
+@property (weak, nonatomic) IBOutlet UILabel        *rightsLabel        ;
+
+
+
 
 @property IBOutlet UIButton *linkButton ;
 
@@ -41,6 +45,7 @@
 -(void)setPrice:(NSString *)priceLabel;
 -(void)setRight:(NSString *)rightLabel;
 -(void)setlink:(NSString *)linkLabel ;
+-(void)setOfflineImage:(NSURL *)imageURL;
 
 
 

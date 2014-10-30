@@ -9,10 +9,12 @@
 #import "AppDelegate.h"
 
 @implementation AppDelegate
+Reachability *reachability ;
+NSString *availableNetwork ;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    // Override point for customization after application launch.
+    [self setUpReachability];
     return YES;
 }
 							
@@ -42,5 +44,85 @@
 {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
 }
+
+-(void) setUpReachability
+{
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleNetworkChange:) name:kReachabilityChangedNotification object:nil];
+    
+    reachability = [Reachability reachabilityForInternetConnection];
+    [reachability startNotifier];
+    
+    NetworkStatus remoteHostStatus = [reachability currentReachabilityStatus];
+    
+    if(remoteHostStatus == NotReachable)
+    {
+        NSLog(@"no");
+        self.hasInternet = NO;
+    }
+    else if(remoteHostStatus == ReachableViaWiFi)
+    {
+        NSLog(@"wifi");
+        self.hasInternet = YES;
+    }
+    else if(remoteHostStatus == ReachableViaWWAN)
+    {
+        NSLog(@"cell");
+        self.hasInternet = YES;
+    }
+    
+    
+    if(!self.hasInternet)
+    {
+        UIAlertView *networkAlert = [[UIAlertView alloc] initWithTitle:@"No network" message:@"Loading data offline..." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+        [networkAlert show];
+    }
+}
+
+-(void) handleNetworkChange:(NSNotification *)notice
+{
+    NetworkStatus remoteHostStatus = [reachability currentReachabilityStatus];
+    NSString *availableNetwork ;
+    if(remoteHostStatus == NotReachable)
+    {
+        NSLog(@"no");
+        self.hasInternet = NO;
+        availableNetwork = @"No network";
+    }
+    else if(remoteHostStatus == ReachableViaWiFi)
+    {
+        NSLog(@"wifi");
+        self.hasInternet = YES;
+        availableNetwork = @"Wifi";
+    }
+    else if(remoteHostStatus == ReachableViaWWAN)
+    {
+        NSLog(@"cell");
+        self.hasInternet = YES;
+        availableNetwork = @"WAN";
+    }
+    
+    if(self.hasInternet)
+    {
+        UIAlertView *networkAlert = [[UIAlertView alloc] initWithTitle:@"Available Network" message:[NSString stringWithFormat:@"%@ is available", availableNetwork] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+        [networkAlert show];
+    }
+}
+
+@end
+
+@implementation ApplicationData
+
+//struct appData
+//{
+//    NSMutableArray *applicationNames ;
+//    NSMutableArray *applicationIconURLs ;
+//    NSMutableArray *applicationImageURLs;
+//    NSMutableArray *applicationArtistNames ;
+//    NSMutableArray *applicationPrices;
+//    NSMutableArray *applicationReleaseDates;
+//    NSMutableArray *applicationCategories;
+//    NSMutableArray *applicationUrlLinks;
+//    NSMutableArray *applicationRights;
+//};
 
 @end

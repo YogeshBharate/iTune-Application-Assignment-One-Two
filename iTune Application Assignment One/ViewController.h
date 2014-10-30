@@ -11,8 +11,15 @@
 
 @interface ViewController : UIViewController <UITableViewDataSource, UITableViewDelegate>
 
--(NSString *) dataFilePath ;
--(void)readPlist ;
--(void)writePlist ;
--(BOOL)isConnected;
+@property (strong, nonatomic) IBOutlet UIActivityIndicatorView *dataLoadingIndicator;
+@property (strong, nonatomic) UIView *loadingView;
+@property (nonatomic, retain) UILabel *loadingLabel;
+
+-(NSString *)createJSONFile;
+-(void)downloadAppsIcon:(NSString *)url appName:(NSString *)labelName;
+-(void)downloadApplicationImages:(NSString*)appImageURL appName:(NSString *)labelName;
+-(void)createAppIconsDirectory;
+-(void)createAppImageDirectory;
+-(NSString *)removeSpecialCharactersFromFileName:(NSString *) fileName;
+
 @end
