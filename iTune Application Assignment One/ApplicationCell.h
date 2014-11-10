@@ -15,5 +15,4 @@
 @property (nonatomic, strong) ApplicationObject * applicationObject;
 
 @end
-
 #endif
