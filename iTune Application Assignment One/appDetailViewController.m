@@ -9,7 +9,9 @@
 #import "appDetailViewController.h"
 #import "ViewController.h"
 #import "AppDelegate.h"
+#import "ApplicationObject.h"
 
+#define queue dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)
 
 @interface appDetailViewController ()
 
@@ -17,9 +19,20 @@
 
 @implementation appDetailViewController
 
+// Application Image directory variables
+NSURL *documentDirectoryForAppImages;
+NSFileManager * appImageFileManager;
+NSURL *destinationUrlForAppImages;
+UIImage *downloadAppImages;
+AppDelegate *appDelegate;
+UIImageView *animatedImageView;
+NSURLSessionDownloadTask *downloadTask;
+
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
+        appDelegate = [[UIApplication sharedApplication] delegate];
+    
     if (self) {
         // Custom initialization
     }
@@ -29,10 +42,25 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
-    AppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
-    
-    UIImageView *animatedImageView = [[UIImageView alloc] initWithFrame:CGRectMake(50, 70, 232, 181)];
+    [self createDirectoryToStoredAppImages];
+}
+
+- (void)didReceiveMemoryWarning
+{
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
+}
+
+- (IBAction)openURL:(id)sender
+{
+    UIWebView *webview = [[UIWebView alloc] init];
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:_applicationObject.URLLink]];
+    [webview loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:_applicationObject.URLLink]]];
+}
+
+-(void)setApplicationObject:(ApplicationObject *)appObject
+{
+    animatedImageView = [[UIImageView alloc] initWithFrame:CGRectMake(50, 70, 232, 181)];
     
     animatedImageView.animationImages = [NSArray arrayWithObjects:
                                          [UIImage imageNamed:@"frame_010"],
@@ -51,112 +79,118 @@
     animatedImageView.animationDuration=1.0f;
     animatedImageView.animationRepeatCount=0;
     [animatedImageView startAnimating];
+    
     [self.view addSubview:animatedImageView ];
+    _applicationObject = appObject;
+    [self refreshViews];
+}
 
-    // Set the image here
-    if(appDelegate.hasInternet)
+-(void)refreshViews
+{
+    self.appName.text = _applicationObject.name;
+    self.appArtistName.text = _applicationObject.artistName;
+    self.appCategory.text = _applicationObject.category;
+    
+     [_appURLLink setTitle:_applicationObject.URLLink forState:UIControlStateNormal];
+    
+    self.appRights.text = _applicationObject.rights;
+    self.appReleaseDate.text = _applicationObject.releaseDate;
+    self.appPrice.text = _applicationObject.price;
+    
+    
+    NSString *appIconStoredPath = [appDelegate.saveAppImageURLAndPathInFile valueForKey:_applicationObject.imageURL];
+    _appImage.image = [UIImage imageWithContentsOfFile:appIconStoredPath];
+    
+    if(_appImage.image)
     {
-        // Load the online images
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        UIImage *appImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:imageDetails]]];
-        dispatch_async(dispatch_get_main_queue(),^{
             [animatedImageView stopAnimating];
-            _bigImage.image = appImage;
-            });
-        });
     }
-    else
+    else if(!_appImage.image && appDelegate.hasInternetConnection)
     {
-        // Load the offline image
-        [animatedImageView stopAnimating];
-        _bigImage.image = [UIImage imageWithData:[NSData dataWithContentsOfURL:offlineImage]];
-        NSLog(@"Path2 : %@",offlineImage);
+        [self downloadAppImagesInDirectory];
     }
+    else if(!appDelegate.hasInternetConnection && !_appImage.image)
+    {
+        _appImage.image = [UIImage imageNamed:@"no_internet_connection.png"];
+        [animatedImageView stopAnimating];
+    }
+}
+
+
+
+-(void)downloadAppImagesInDirectory
+{
+    NSURL *downloadURL = [NSURL URLWithString:_applicationObject.imageURL];
     
-    _bigLabel.text  = labelDetails ;
+    NSURLSessionConfiguration *sessionConfig = [NSURLSessionConfiguration defaultSessionConfiguration];
+    NSURLSession *session = [NSURLSession sessionWithConfiguration:sessionConfig delegate:nil delegateQueue:nil];
     
-    _artistLabel.text = artistDetails ;
+    __weak  appDetailViewController* weakSelf = self;
     
-    _categoryLabel.text = categoryDetails ;
+    dispatch_async(queue, ^{
+        
+        downloadTask = [session downloadTaskWithURL:downloadURL completionHandler:^(NSURL *location,  NSURLResponse *respone, NSError *error)
+              {
+                  NSString *iconName = [location lastPathComponent];
+                  NSMutableString *changeIconName = [[NSMutableString alloc] init];
+                  
+                  changeIconName = [iconName mutableCopy];
+                  
+                  [changeIconName setString:_applicationObject.bundleId];
+                  
+                  NSString *appIconDirectory = [[documentDirectoryForAppImages absoluteString] stringByAppendingPathComponent:@"appImages"];
+                  
+                  destinationUrlForAppImages = [[NSURL URLWithString:appIconDirectory] URLByAppendingPathComponent:changeIconName];
+                  
+                  NSError *error1;
+                  
+                  if([appImageFileManager fileExistsAtPath:[destinationUrlForAppImages absoluteString]])
+                  {
+                      [appImageFileManager removeItemAtURL:destinationUrlForAppImages error:NULL];
+                  }
+                  
+                  BOOL status = [appImageFileManager copyItemAtURL:location toURL:destinationUrlForAppImages error:&error1];
+                  if (status && !error1) {
+                      [appDelegate.saveAppImageURLAndPathInFile setValue:destinationUrlForAppImages.path forKey:_applicationObject.imageURL];
+//                      NSLog(@"Dict23 : %@", appDelegate.saveAppImageURLAndPathInFile);
+                      dispatch_async(dispatch_get_main_queue(), ^{
+                          [weakSelf refreshViews];
+                                  [animatedImageView stopAnimating];
+                      });
+                      
+                      dispatch_async(queue, ^{
+                          NSString *imageDictionaryStoredFilePath = [appDelegate.documentDirectoryPath stringByAppendingPathComponent:@"ImageURLsAndPaths.plist"];
+                          
+                          [appDelegate.saveAppImageURLAndPathInFile writeToFile:imageDictionaryStoredFilePath atomically:YES];
+                      });
+                  }
+                  
+              }];
+        [downloadTask resume];
+    });
+}
+
+-(void)createDirectoryToStoredAppImages
+{
+    NSError *error;
+    appImageFileManager = [NSFileManager defaultManager];
     
-    _releaseDateLabel.text = releaseDateDetails ;
+    NSArray *urls = [appImageFileManager URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask];
+    documentDirectoryForAppImages = [urls objectAtIndex:0];
     
-    _priceLabel.text = priceDetails ;
+    NSString *appImagePath = [[documentDirectoryForAppImages absoluteString] stringByAppendingPathComponent:@"appImages"];
     
-    _linkLabel.text = linkDetails ;
+    NSURL *appImageURLPath = [NSURL URLWithString:appImagePath];
     
-    [_linkButton setTitle:linkDetails forState:UIControlStateNormal];
-    
-    _rightsLabel.text = rightsDetails ;
+    if(![appImageFileManager createDirectoryAtURL:appImageURLPath withIntermediateDirectories:NO attributes:nil error:&error])
+    {
+        NSLog(@"Error while creating appImages directory : %@", error);
+    }
 }
 
-- (void)didReceiveMemoryWarning
+-(void)dealloc
 {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+    [downloadTask cancel];
 }
-
-- (IBAction)openURL:(id)sender
-{
-    UIWebView *webview = [[UIWebView alloc] init];
-    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:linkDetails]];
-    [webview loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:linkDetails]]];  
-}
-
--(void)setText:(NSString *)labelText
-{
-    labelDetails = labelText;
-}
-
--(void) setImage:(NSString *)imageIcon
-{
-    imageDetails = imageIcon;
-    
-}
-
--(void) setArtistName:(NSString *)artistLabel
-{
-    artistDetails = artistLabel ;
-}
-
--(void)setCategoryName:(NSString *)categoryLabel
-{
-    categoryDetails = categoryLabel ;
-}
-
--(void)setReleaseDate:(NSString *)releaseDateLabel
-{
-    releaseDateDetails = releaseDateLabel ;
-}
-
--(void)setPrice:(NSString *)priceLabel
-{
-    priceDetails = priceLabel ;
-}
-
--(void)setRight:(NSString *)rightLabel
-{
-    rightsDetails = rightLabel ;
-}
-
--(void)setlink:(NSString *)linkLabel
-{
-    linkDetails = linkLabel ;
-}
-
--(void)setOfflineImage:(NSURL *)imageURL
-{
-    offlineImage = imageURL;
-}
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 @end

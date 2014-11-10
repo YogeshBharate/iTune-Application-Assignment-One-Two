@@ -8,18 +8,17 @@
 
 #import <UIKit/UIKit.h>
 #import "Reachability.h"
+#import "ApplicationObject.h"
 
 @interface ViewController : UIViewController <UITableViewDataSource, UITableViewDelegate>
 
-@property (strong, nonatomic) IBOutlet UIActivityIndicatorView *dataLoadingIndicator;
-@property (strong, nonatomic) UIView *loadingView;
+@property (nonatomic, strong) IBOutlet UIActivityIndicatorView *dataLoadingIndicator;
+@property (nonatomic, strong) UIView *loadingView;
 @property (nonatomic, retain) UILabel *loadingLabel;
+@property (nonatomic, strong) NSMutableDictionary *dictForStroingAppImageURLsAndPaths;
 
--(NSString *)createJSONFile;
--(void)downloadAppsIcon:(NSString *)url appName:(NSString *)labelName;
--(void)downloadApplicationImages:(NSString*)appImageURL appName:(NSString *)labelName;
--(void)createAppIconsDirectory;
--(void)createAppImageDirectory;
--(NSString *)removeSpecialCharactersFromFileName:(NSString *) fileName;
+
+-(void)parseJSONData:(NSData *)responseData;
 
 @end
+

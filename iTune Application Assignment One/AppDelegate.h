@@ -13,10 +13,12 @@
 
 @property (strong, nonatomic) UIWindow *window;
 
-@property (nonatomic, assign) BOOL hasInternet ;
+@property (strong, nonatomic) NSMutableDictionary *saveAppIconURLAndPathInFile;
 
-@end
+@property (strong, nonatomic) NSMutableDictionary *saveAppImageURLAndPathInFile;
 
-@interface ApplicationData : AppDelegate
+@property (strong, nonatomic) NSString *documentDirectoryPath;
+
+@property (nonatomic, assign) BOOL hasInternetConnection ;
 
 @end

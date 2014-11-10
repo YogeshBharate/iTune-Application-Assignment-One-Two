@@ -9,12 +9,35 @@
 #import "AppDelegate.h"
 
 @implementation AppDelegate
-Reachability *reachability ;
-NSString *availableNetwork ;
+Reachability *reachability;
+
+NSString *saveAppIconDictionaryPath;
+NSString *saveAppImageDictionaryPath;
+
+NSString *availableNetwork;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     [self setUpReachability];
+    
+    _documentDirectoryPath = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)[0];
+    
+    saveAppIconDictionaryPath = [_documentDirectoryPath stringByAppendingPathComponent:@"IconURLsAndPaths.plist"];
+    _saveAppIconURLAndPathInFile = [[NSMutableDictionary alloc] initWithContentsOfFile:saveAppIconDictionaryPath];
+    
+    saveAppImageDictionaryPath = [_documentDirectoryPath stringByAppendingPathComponent:@"ImageURLsAndPaths.plist"];
+    _saveAppImageURLAndPathInFile = [[NSMutableDictionary alloc] initWithContentsOfFile:saveAppImageDictionaryPath];
+    
+    if(!_saveAppIconURLAndPathInFile)
+    {
+        _saveAppIconURLAndPathInFile = [[NSMutableDictionary alloc] init];
+    }
+    
+    if(!_saveAppImageURLAndPathInFile)
+    {
+        _saveAppImageURLAndPathInFile = [[NSMutableDictionary alloc] init];
+    }
+    
     return YES;
 }
 							
@@ -26,12 +49,23 @@ NSString *availableNetwork ;
 
 - (void)applicationDidEnterBackground:(UIApplication *)application
 {
+    NSString *dictSavedFilePath = [_documentDirectoryPath stringByAppendingPathComponent:@"IconURLsAndPaths.plist"];
+    [_saveAppIconURLAndPathInFile writeToFile:dictSavedFilePath atomically:YES];
+    NSLog(@"dictionary : %@", _saveAppIconURLAndPathInFile);
+    
+    NSString *imageDictSaveFilePath = [_documentDirectoryPath stringByAppendingPathComponent:@"ImageURLsAndPaths.plist"];
+    [_saveAppImageURLAndPathInFile writeToFile:imageDictSaveFilePath atomically:YES];
+    NSLog(@"dictionary 2: %@", _saveAppImageURLAndPathInFile);
+    
+    
+    
     // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later. 
     // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application
 {
+    
     // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
 }
 
@@ -42,7 +76,10 @@ NSString *availableNetwork ;
 
 - (void)applicationWillTerminate:(UIApplication *)application
 {
-    // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+    NSString *imageDictSaveFilePath = [_documentDirectoryPath stringByAppendingPathComponent:@"ImageURLsAndPaths.plist"];
+    [_saveAppImageURLAndPathInFile writeToFile:imageDictSaveFilePath atomically:YES];
+    NSLog(@"dictionary 2: %@", _saveAppImageURLAndPathInFile);
+    
 }
 
 -(void) setUpReachability
@@ -57,21 +94,21 @@ NSString *availableNetwork ;
     if(remoteHostStatus == NotReachable)
     {
         NSLog(@"no");
-        self.hasInternet = NO;
+        self.hasInternetConnection = NO;
     }
     else if(remoteHostStatus == ReachableViaWiFi)
     {
         NSLog(@"wifi");
-        self.hasInternet = YES;
+        self.hasInternetConnection = YES;
     }
     else if(remoteHostStatus == ReachableViaWWAN)
     {
         NSLog(@"cell");
-        self.hasInternet = YES;
+        self.hasInternetConnection = YES;
     }
     
     
-    if(!self.hasInternet)
+    if(!self.hasInternetConnection)
     {
         UIAlertView *networkAlert = [[UIAlertView alloc] initWithTitle:@"No network" message:@"Loading data offline..." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
         [networkAlert show];
@@ -85,44 +122,27 @@ NSString *availableNetwork ;
     if(remoteHostStatus == NotReachable)
     {
         NSLog(@"no");
-        self.hasInternet = NO;
+        self.hasInternetConnection = NO;
         availableNetwork = @"No network";
     }
     else if(remoteHostStatus == ReachableViaWiFi)
     {
         NSLog(@"wifi");
-        self.hasInternet = YES;
+        self.hasInternetConnection = YES;
         availableNetwork = @"Wifi";
     }
     else if(remoteHostStatus == ReachableViaWWAN)
     {
         NSLog(@"cell");
-        self.hasInternet = YES;
+        self.hasInternetConnection = YES;
         availableNetwork = @"WAN";
     }
     
-    if(self.hasInternet)
+    if(self.hasInternetConnection)
     {
         UIAlertView *networkAlert = [[UIAlertView alloc] initWithTitle:@"Available Network" message:[NSString stringWithFormat:@"%@ is available", availableNetwork] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
         [networkAlert show];
     }
 }
-
-@end
-
-@implementation ApplicationData
-
-//struct appData
-//{
-//    NSMutableArray *applicationNames ;
-//    NSMutableArray *applicationIconURLs ;
-//    NSMutableArray *applicationImageURLs;
-//    NSMutableArray *applicationArtistNames ;
-//    NSMutableArray *applicationPrices;
-//    NSMutableArray *applicationReleaseDates;
-//    NSMutableArray *applicationCategories;
-//    NSMutableArray *applicationUrlLinks;
-//    NSMutableArray *applicationRights;
-//};
 
 @end

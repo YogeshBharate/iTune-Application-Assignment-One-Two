@@ -10,31 +10,31 @@
 	<string>iTune Application Assignment One</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
-		<key>D5BF8195-F7BC-40DD-A1C9-00F2F691384D</key>
+		<key>83E2D628EE2EC8069EF0B0A1ABBD7A07CA1C6B9E</key>
 		<string>https://github.com/YogeshBharate/iTune-Application-Assignment-One-Two.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
-	<string>iTune Application Assignment One.xcodeproj/project.xcworkspace</string>
+	<string>iTune Application Assignment One.xcodeproj</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
-		<key>D5BF8195-F7BC-40DD-A1C9-00F2F691384D</key>
+		<key>83E2D628EE2EC8069EF0B0A1ABBD7A07CA1C6B9E</key>
 		<string>../..</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
 	<string>https://github.com/YogeshBharate/iTune-Application-Assignment-One-Two.git</string>
 	<key>IDESourceControlProjectVersion</key>
-	<integer>110</integer>
+	<integer>111</integer>
 	<key>IDESourceControlProjectWCCIdentifier</key>
-	<string>D5BF8195-F7BC-40DD-A1C9-00F2F691384D</string>
+	<string>83E2D628EE2EC8069EF0B0A1ABBD7A07CA1C6B9E</string>
 	<key>IDESourceControlProjectWCConfigurations</key>
 	<array>
 		<dict>
 			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
 			<string>public.vcs.git</string>
 			<key>IDESourceControlWCCIdentifierKey</key>
-			<string>D5BF8195-F7BC-40DD-A1C9-00F2F691384D</string>
+			<string>83E2D628EE2EC8069EF0B0A1ABBD7A07CA1C6B9E</string>
 			<key>IDESourceControlWCCName</key>
-			<string>iTune Application Assignments</string>
+			<string>iTune%20Application%20Assignments</string>
 		</dict>
 	</array>
 </dict>
