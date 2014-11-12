@@ -77,7 +77,7 @@ NSURLSessionDownloadTask *downloadTask;
     
     if(!_appIcon.image && appDelgate.hasInternetConnection)
     {
-        [self downloadAppIconsInDirectory];
+        [self downloadAppIcons];
     }
 }
 
@@ -119,7 +119,7 @@ NSURLSessionDownloadTask *downloadTask;
     return self.detailLabel;
 }
 
--(void)downloadAppIconsInDirectory
+-(void)downloadAppIcons
 {
     NSURL *downloadURL = [NSURL URLWithString:_applicationObject.iconURL];
     
@@ -156,7 +156,6 @@ NSURLSessionDownloadTask *downloadTask;
                   if (status && !error1)
                       {
                           [appDelgate.saveAppIconURLAndPathInFile setValue:destinationUrlForAppIcons.path forKey:_applicationObject.iconURL];
-//                          NSLog(@"Dict : %@", appDelgate.saveAppIconURLAndPathInFile);
                           dispatch_async(dispatch_get_main_queue(), ^{
                           [weakSelf refreshViews];
                           });

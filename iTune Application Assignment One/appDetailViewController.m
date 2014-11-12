@@ -107,7 +107,7 @@ NSURLSessionDownloadTask *downloadTask;
     }
     else if(!_appImage.image && appDelegate.hasInternetConnection)
     {
-        [self downloadAppImagesInDirectory];
+        [self downloadAppImages];
     }
     else if(!appDelegate.hasInternetConnection && !_appImage.image)
     {
@@ -118,7 +118,7 @@ NSURLSessionDownloadTask *downloadTask;
 
 
 
--(void)downloadAppImagesInDirectory
+-(void)downloadAppImages
 {
     NSURL *downloadURL = [NSURL URLWithString:_applicationObject.imageURL];
     
