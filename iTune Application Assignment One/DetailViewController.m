@@ -6,18 +6,18 @@
 //  Copyright (c) 2014 Synerzip. All rights reserved.
 //
 
-#import "appDetailViewController.h"
-#import "ViewController.h"
+#import "DetailViewController.h"
+#import "MasterViewController.h"
 #import "AppDelegate.h"
-#import "ApplicationObject.h"
+#import "ApplicationData.h"
 
 #define queue dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)
 
-@interface appDetailViewController ()
+@interface DetailViewController ()
 
 @end
 
-@implementation appDetailViewController
+@implementation DetailViewController
 
 // Application Image directory variables
 NSURL *documentDirectoryForAppImages;
@@ -58,7 +58,7 @@ NSURLSessionDownloadTask *downloadTask;
     [webview loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:_applicationObject.URLLink]]];
 }
 
--(void)setApplicationObject:(ApplicationObject *)appObject
+-(void)setApplicationObject:(ApplicationData *)appObject
 {
     animatedImageView = [[UIImageView alloc] initWithFrame:CGRectMake(50, 70, 232, 181)];
     
@@ -125,7 +125,7 @@ NSURLSessionDownloadTask *downloadTask;
     NSURLSessionConfiguration *sessionConfig = [NSURLSessionConfiguration defaultSessionConfiguration];
     NSURLSession *session = [NSURLSession sessionWithConfiguration:sessionConfig delegate:nil delegateQueue:nil];
     
-    __weak  appDetailViewController* weakSelf = self;
+    __weak  DetailViewController* weakSelf = self;
     
     dispatch_async(queue, ^{
         
@@ -152,14 +152,14 @@ NSURLSessionDownloadTask *downloadTask;
                   BOOL status = [appImageFileManager copyItemAtURL:location toURL:destinationUrlForAppImages error:&error1];
                   if (status && !error1) {
                       [appDelegate.saveAppImageURLAndPathInFile setValue:destinationUrlForAppImages.path forKey:_applicationObject.imageURL];
-//                      NSLog(@"Dict23 : %@", appDelegate.saveAppImageURLAndPathInFile);
+                      
                       dispatch_async(dispatch_get_main_queue(), ^{
                           [weakSelf refreshViews];
                                   [animatedImageView stopAnimating];
                       });
                       
                       dispatch_async(queue, ^{
-                          NSString *imageDictionaryStoredFilePath = [appDelegate.documentDirectoryPath stringByAppendingPathComponent:@"ImageURLsAndPaths.plist"];
+                          NSString *imageDictionaryStoredFilePath = [appDelegate.documentDirectoryPath stringByAppendingPathComponent:@"ImageDictionary.plist"];
                           
                           [appDelegate.saveAppImageURLAndPathInFile writeToFile:imageDictionaryStoredFilePath atomically:YES];
                       });

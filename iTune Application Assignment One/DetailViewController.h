@@ -8,10 +8,10 @@
 
 #import <UIKit/UIKit.h>
 
-@class ApplicationObject;
-@interface appDetailViewController : UIViewController
+@class ApplicationData;
+@interface DetailViewController : UIViewController
 
-@property (nonatomic, strong) ApplicationObject * applicationObject;
+@property (nonatomic, strong) ApplicationData * applicationObject;
 @property (weak, nonatomic) IBOutlet UIImageView *appImage;
 @property (weak, nonatomic) IBOutlet UILabel *appName;
 @property (weak, nonatomic) IBOutlet UILabel *appArtistName;

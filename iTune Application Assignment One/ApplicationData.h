@@ -1,15 +1,9 @@
-//
-//  ApplicationObject.h
-//  iTune Application Assignment One
-//
-//  Created by Yogesh Bharate on 03/11/14.
-//  Copyright (c) 2014 Synerzip. All rights reserved.
-//
+
 
 #ifndef iTune_Application_Assignment_One_ApplicationObject_h
 #define iTune_Application_Assignment_One_ApplicationObject_h
 
-@interface  ApplicationObject : NSObject
+@interface  ApplicationData : NSObject
 
 
 @property (nonatomic, strong) NSString *name;

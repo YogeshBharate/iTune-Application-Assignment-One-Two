@@ -8,11 +8,13 @@
 
 #ifndef iTune_Application_Assignment_One_ApplicationCell_h
 #define iTune_Application_Assignment_One_ApplicationCell_h
-#import "ApplicationObject.h"
+#import "ApplicationData.h"
 
-@class ApplicationObject;
+@class ApplicationData;
 @interface ApplicationCell : UITableViewCell
-@property (nonatomic, strong) ApplicationObject * applicationObject;
+@property (nonatomic, strong) ApplicationData * applicationData;
+@property (nonatomic) BOOL isScrolling;
 
+-(void)setApplicationData:(ApplicationData *)applicationData forIndexPath:(NSIndexPath *)indexPath;
 @end
 #endif

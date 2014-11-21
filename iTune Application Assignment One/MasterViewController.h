@@ -8,9 +8,9 @@
 
 #import <UIKit/UIKit.h>
 #import "Reachability.h"
-#import "ApplicationObject.h"
+#import "ApplicationData.h"
 
-@interface ViewController : UIViewController <UITableViewDataSource, UITableViewDelegate>
+@interface MasterViewController : UIViewController <UITableViewDataSource, UITableViewDelegate>
 
 @property (nonatomic, strong) IBOutlet UIActivityIndicatorView *dataLoadingIndicator;
 @property (nonatomic, strong) UIView *loadingView;

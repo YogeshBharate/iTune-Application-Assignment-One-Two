@@ -6,12 +6,12 @@
 //  Copyright (c) 2014 Synerzip. All rights reserved.
 //
 
-#import "iTuneStoreObject.h"
-#import "ApplicationObject.h"
+#import "parseData.h"
+#import "ApplicationData.h"
 #import "AppDelegate.h"
-#import "ViewController.h"
+#import "MasterViewController.h"
 
-@implementation iTuneStoreObject
+@implementation parseData
 
 -(instancetype) initWithJsonData:(NSDictionary *)jsonData
 {
@@ -28,11 +28,11 @@
             _applicationObjects = [NSMutableArray array];
             for (NSDictionary * itemDict in itemsArray)
             {
-                ApplicationObject * appObject = [[ApplicationObject alloc] initWithJsonData: itemDict];
+                ApplicationData * appObject = [[ApplicationData alloc] initWithJsonData: itemDict];
                 [_applicationObjects addObject: appObject];
             }
             
-            NSString *storedAppObjectInFile = [appDelegate.documentDirectoryPath stringByAppendingPathComponent:@"storedApplicationObjects.plist"];
+            NSString *storedAppObjectInFile = [appDelegate.documentDirectoryPath stringByAppendingPathComponent:@"ApplicationData.plist"];
             BOOL status = [NSKeyedArchiver archiveRootObject:_applicationObjects toFile:storedAppObjectInFile];
             if(!status)
             {
@@ -41,10 +41,9 @@
         }
         else
         {
-            NSString *loadApplicationObjectFromFile = [appDelegate.documentDirectoryPath stringByAppendingPathComponent:@"storedApplicationObjects.plist"];
+            NSString *loadApplicationObjectFromFile = [appDelegate.documentDirectoryPath stringByAppendingPathComponent:@"ApplicationData.plist"];
             
             _applicationObjects = [NSKeyedUnarchiver unarchiveObjectWithFile:loadApplicationObjectFromFile];
-            NSLog(@"load : %@", _applicationObjects);
         }
     }
     return self;

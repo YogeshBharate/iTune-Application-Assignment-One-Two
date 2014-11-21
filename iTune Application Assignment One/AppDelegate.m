@@ -22,15 +22,15 @@ NSString *availableNetwork;
     
     _documentDirectoryPath = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)[0];
     
-    saveAppIconDictionaryPath = [_documentDirectoryPath stringByAppendingPathComponent:@"IconURLsAndPaths.plist"];
-    _saveAppIconURLAndPathInFile = [[NSMutableDictionary alloc] initWithContentsOfFile:saveAppIconDictionaryPath];
+    saveAppIconDictionaryPath = [_documentDirectoryPath stringByAppendingPathComponent:@"IconDictionary.plist"];
+    _downloadedIcons = [[NSMutableDictionary alloc] initWithContentsOfFile:saveAppIconDictionaryPath];
     
-    saveAppImageDictionaryPath = [_documentDirectoryPath stringByAppendingPathComponent:@"ImageURLsAndPaths.plist"];
+    saveAppImageDictionaryPath = [_documentDirectoryPath stringByAppendingPathComponent:@"ImageDictionary.plist"];
     _saveAppImageURLAndPathInFile = [[NSMutableDictionary alloc] initWithContentsOfFile:saveAppImageDictionaryPath];
     
-    if(!_saveAppIconURLAndPathInFile)
+    if(!_downloadedIcons)
     {
-        _saveAppIconURLAndPathInFile = [[NSMutableDictionary alloc] init];
+        _downloadedIcons = [[NSMutableDictionary alloc] init];
     }
     
     if(!_saveAppImageURLAndPathInFile)
@@ -49,11 +49,11 @@ NSString *availableNetwork;
 
 - (void)applicationDidEnterBackground:(UIApplication *)application
 {
-    NSString *dictSavedFilePath = [_documentDirectoryPath stringByAppendingPathComponent:@"IconURLsAndPaths.plist"];
-    [_saveAppIconURLAndPathInFile writeToFile:dictSavedFilePath atomically:YES];
-    NSLog(@"dictionary : %@", _saveAppIconURLAndPathInFile);
+    NSString *dictSavedFilePath = [_documentDirectoryPath stringByAppendingPathComponent:@"IconDictionary.plist"];
+    [_downloadedIcons writeToFile:dictSavedFilePath atomically:YES];
+    NSLog(@"dictionary : %@", _downloadedIcons);
     
-    NSString *imageDictSaveFilePath = [_documentDirectoryPath stringByAppendingPathComponent:@"ImageURLsAndPaths.plist"];
+    NSString *imageDictSaveFilePath = [_documentDirectoryPath stringByAppendingPathComponent:@"ImageDictionary.plist"];
     [_saveAppImageURLAndPathInFile writeToFile:imageDictSaveFilePath atomically:YES];
     NSLog(@"dictionary 2: %@", _saveAppImageURLAndPathInFile);
     
@@ -76,7 +76,7 @@ NSString *availableNetwork;
 
 - (void)applicationWillTerminate:(UIApplication *)application
 {
-    NSString *imageDictSaveFilePath = [_documentDirectoryPath stringByAppendingPathComponent:@"ImageURLsAndPaths.plist"];
+    NSString *imageDictSaveFilePath = [_documentDirectoryPath stringByAppendingPathComponent:@"ImageDictionary.plist"];
     [_saveAppImageURLAndPathInFile writeToFile:imageDictSaveFilePath atomically:YES];
     NSLog(@"dictionary 2: %@", _saveAppImageURLAndPathInFile);
     

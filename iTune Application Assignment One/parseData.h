@@ -7,9 +7,9 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "ViewController.h"
+#import "MasterViewController.h"
 
-@interface iTuneStoreObject : NSObject
+@interface parseData : NSObject
 
 @property (nonatomic, strong) NSString *name;
 @property (nonatomic, strong) NSString *url;

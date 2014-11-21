@@ -13,7 +13,7 @@
 
 @property (strong, nonatomic) UIWindow *window;
 
-@property (strong, nonatomic) NSMutableDictionary *saveAppIconURLAndPathInFile;
+@property (strong, nonatomic) NSMutableDictionary *downloadedIcons;
 
 @property (strong, nonatomic) NSMutableDictionary *saveAppImageURLAndPathInFile;
 

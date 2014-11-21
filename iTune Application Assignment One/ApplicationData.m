@@ -1,18 +1,10 @@
-//
-//  ApplicationObject.m
-//  iTune Application Assignment One
-//
-//  Created by Yogesh Bharate on 03/11/14.
-//  Copyright (c) 2014 Synerzip. All rights reserved.
-//
 
-#import "ApplicationObject.h"
-#import "ViewController.h"
+#import "ApplicationData.h"
+#import "MasterViewController.h"
 #import "AppDelegate.h"
 #define queue dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)
 
-@implementation ApplicationObject
-
+@implementation ApplicationData
 -(instancetype)initWithJsonData:(NSDictionary *) jsonData
 {
      self = [super init];
@@ -63,8 +55,7 @@
         // Fetch the app rights
         NSDictionary *rights = jsonData[@"rights"];
         _rights = rights[@"label"];
-}
-    
+    }
     return self;
 }
 

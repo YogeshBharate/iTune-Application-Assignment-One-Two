@@ -8,7 +8,7 @@
         <!--iTune Applications-->
         <scene sceneID="ufC-wZ-h7g">
             <objects>
-                <viewController id="vXZ-lx-hvc" customClass="ViewController" sceneMemberID="viewController">
+                <viewController id="vXZ-lx-hvc" customClass="MasterViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="jyV-Pf-zRb"/>
                         <viewControllerLayoutGuide type="bottom" id="2fi-mo-0CV"/>
@@ -17,7 +17,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <tableView clipsSubviews="YES" contentMode="scaleAspectFill" fixedFrame="YES" alwaysBounceVertical="YES" pagingEnabled="YES" dataMode="prototypes" style="plain" rowHeight="66" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="yk9-lg-bL6">
+                            <tableView clipsSubviews="YES" contentMode="scaleAspectFill" fixedFrame="YES" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" rowHeight="66" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="yk9-lg-bL6">
                                 <rect key="frame" x="0.0" y="0.0" width="321" height="568"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <color key="sectionIndexBackgroundColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
@@ -39,10 +39,10 @@
             </objects>
             <point key="canvasLocation" x="-1558" y="835"/>
         </scene>
-        <!--App Detail View Controller-->
+        <!--Detail View Controller-->
         <scene sceneID="c2I-cG-GVe">
             <objects>
-                <viewController storyboardIdentifier="appDetailsViewController" id="iTX-lq-2x4" customClass="appDetailViewController" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="appDetailsViewController" id="iTX-lq-2x4" customClass="DetailViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="YPr-IF-xT4"/>
                         <viewControllerLayoutGuide type="bottom" id="TJo-f3-NfQ"/>
