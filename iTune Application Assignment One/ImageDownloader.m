@@ -41,9 +41,7 @@ AppDelegate *appDelgate;
     sessionConfig.allowsCellularAccess = NO;
     _session = [NSURLSession sessionWithConfiguration:sessionConfig delegate:self delegateQueue:nil];
     self.downloadTask = [_session downloadTaskWithURL:[NSURL URLWithString:iconURL]];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(stopDownloadingIcon:) name:@"stopDownloadingIcon" object:nil];
-    
+
     [_downloadTask resume];
 }
 
@@ -79,10 +77,6 @@ AppDelegate *appDelgate;
         {
             self.completionHandler(destinationUrlForAppIcon);
         }
-        
-        
-        
-//        [[NSNotificationCenter defaultCenter] postNotificationName:@"TestNotification" object:self];
     }
     else
     {

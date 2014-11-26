@@ -50,7 +50,6 @@ AppDelegate *appDelgate;
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     appDelgate = [[UIApplication sharedApplication] delegate];
     
-    
     [self createDirectoryToStoredAppIcons];
     
     if (self)
@@ -91,43 +90,45 @@ AppDelegate *appDelgate;
 
 -(void)refreshViews
 {
-    
     __weak ApplicationCell *weak = self;
-    //_imageDownloader = (self.downloadInProgress)[indexPath];
     
-//    self.appLabelName.text = _appData.name;
-//    self.appLabelName.font = [UIFont fontWithName:@"Helvetica-Bold" size:17];
-//
-//    self.detailTextLabel.text = _appData.artistName;
-//    self.detailTextLabel.font = [UIFont fontWithName:@"Helvetica" size:14];
-    
+    self.appLabelName.text = _appData.name;
+    self.appLabelName.font = [UIFont fontWithName:@"Helvetica-Bold" size:17];
 
-        
-        
+    self.detailTextLabel.text = _appData.artistName;
+    self.detailTextLabel.font = [UIFont fontWithName:@"Helvetica" size:14];
+    
     NSString *appIconStoredPath = [appDelgate.downloadedIcons valueForKey:_appData.iconURL];
-     _appIcon.image = [UIImage imageWithContentsOfFile:appIconStoredPath];
+     UIImage *image = [UIImage imageWithContentsOfFile:appIconStoredPath];
     
-    if(!_appIcon.image && appDelgate.hasInternetConnection )
+    if(!image && appDelgate.hasInternetConnection )
     {
-        if(_imageDownloader == nil)
-        {
-            
-            _imageDownloader = [[ImageDownloader alloc] init];
-            _imageDownloader.appData = self.appData;
-            //    self.parentTableView = [self findParentTableView];
-            
-            _imageDownloader.completionHandler = ^(NSURL *localPath){
-                
-                _appIcon.image = [UIImage imageWithContentsOfFile:localPath.path];
-                
-                
-            };
-        }
-
-            [_imageDownloader startDownloadingIcon:_appData.iconURL saveAs:_appData.name];
-
+            if(_isDecelerating == NO && _isDragging == NO)
+            {
+                if(_imageDownloader == nil)
+                {
+                    
+                    _imageDownloader = [[ImageDownloader alloc] init];
+                    _imageDownloader.appData = self.appData;
+                    
+                    _imageDownloader.completionHandler = ^(NSURL *localPath){
+                        
+                        weak.appIcon.image = [UIImage imageWithContentsOfFile:localPath.path];
+                        
+                        
+                    };
+                }
+                [_imageDownloader startDownloadingIcon:_appData.iconURL saveAs:_appData.name];
+            }
     }
-    
+    else if(image)
+    {
+        self.appIcon.image = image;
+    }
+    else if(!appDelgate.hasInternetConnection)
+    {
+        self.appIcon.image = [UIImage imageNamed:@"icon_placeholder.png"];
+    }
 }
 
 -(void)didMoveToSuperview
@@ -135,16 +136,13 @@ AppDelegate *appDelgate;
     if(self.superview)
     {
         self.parentTableView = [self findParentTableView];
-//        NSIndexPath *indexPath = [self.parentTableView indexPathForCell:self];
-//        NSLog(@"Index Path = %@ table count = %d", _indexPath, [self.parentTableView numberOfRowsInSection:0]);
-//        [self.parentTableView reloadRowsAtIndexPaths:@[_indexPath] withRowAnimation:UITableViewRowAnimationNone];
     }
 }
 
 -(void)setApplicationData:(ApplicationData *)applicationData forIndexPath:(NSIndexPath *)indexPath
 {
     _indexPath = indexPath;
-    _appData = applicationData;
+    self.appData = applicationData;
     [self refreshViews];
 }
 

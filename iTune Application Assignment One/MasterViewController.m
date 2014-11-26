@@ -114,17 +114,14 @@ static NSString *cellIdentifier = @"CellIdentifier";
         [_loadingView setHidden:YES];
      
         ApplicationData *appObject = _storeObject.applicationObjects[indexPath.row];
-        cell.textLabel.text = appObject.name;
-        cell.detailTextLabel.text = appObject.artistName;
+//        cell.textLabel.text = appObject.name;
+//        cell.detailTextLabel.text = appObject.artistName;
         if(nodeCount > 0)
         {
-            if(self.tableView.decelerating == NO && self.tableView.dragging == NO)
-            {
             
-                [cell setApplicationData:appObject forIndexPath:indexPath];
-            }
-            cell.isScrolling = isScroll;
-            cell.imageView.image = [UIImage imageNamed:@"icon_placeholder.png"];
+            cell.isDecelerating = self.tableView.decelerating;
+            cell.isDragging = self.tableView.dragging;
+            [cell setApplicationData:appObject forIndexPath:indexPath];
         }
     }
     return cell ;

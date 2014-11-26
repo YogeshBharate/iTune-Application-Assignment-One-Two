@@ -14,6 +14,8 @@
 @interface ApplicationCell : UITableViewCell
 @property (nonatomic, strong) ApplicationData * applicationData;
 @property (nonatomic) BOOL isScrolling;
+@property (nonatomic) BOOL isDecelerating;
+@property (nonatomic) BOOL isDragging;
 
 -(void)setApplicationData:(ApplicationData *)applicationData forIndexPath:(NSIndexPath *)indexPath;
 @end
