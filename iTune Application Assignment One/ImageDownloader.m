@@ -14,63 +14,87 @@
 @class ApplicationCell;
 
 @interface ImageDownloader()
+
 @property (strong, nonatomic) NSURLSessionDownloadTask *downloadTask;
 @property (strong, nonatomic) NSString *fileName;
 @property (strong, nonatomic) NSString *iconURL;
+@property(nonatomic) BOOL isIcon;
 @property (strong, nonatomic) NSMutableArray *downloadTasks;
 @property (strong ,nonatomic) NSURLSession *session;
+
 @end
 
 @implementation ImageDownloader : NSObject
 
 // Application icon directory variables
-NSURL *documentsDirectoryForAppIcons;
+NSURL *iconDocumentDirectory;
+NSURL *imageDocumentDirectory;
 NSFileManager *appIconFileManager;
 NSURL *destinationUrlForAppIcons;
 UIImage *downloadAppIcons;
 AppDelegate *appDelgate;
 
--(void)startDownloadingIcon:(NSString *)iconURL saveAs:(NSString *)name
+- (void)startDownloadingIcon:(NSString *)iconURL saveAs:(NSString *)name isIcon:(BOOL)icon
 {
     self.fileName = name;
-    self.iconURL = iconURL;
+    self.iconURL  = iconURL;
+    self.isIcon   = icon;
+    
     NSURLSessionConfiguration *sessionConfig = [NSURLSessionConfiguration defaultSessionConfiguration];
+    
     sessionConfig.allowsCellularAccess = NO;
+    
     _session = [NSURLSession sessionWithConfiguration:sessionConfig delegate:self delegateQueue:nil];
+    
     self.downloadTask = [_session downloadTaskWithURL:[NSURL URLWithString:iconURL]];
 
     [_downloadTask resume];
 }
 
--(void)stopDownloadingIcon:(NSNotification *) notification
+- (void)stopDownloadingIcon:(NSNotification *) notification
 {
     [self.downloadTask cancel];
     [self.session invalidateAndCancel];
 }
 
--(void)URLSession:(NSURLSession *)session downloadTask:(NSURLSessionDownloadTask *)downloadTask didFinishDownloadingToURL:(NSURL *)location
+- (void)URLSession:(NSURLSession *)session downloadTask:(NSURLSessionDownloadTask *)downloadTask didFinishDownloadingToURL:(NSURL *)location
 {
+    NSString *directory;
     NSString *trimmedString = [_fileName stringByReplacingOccurrencesOfString:@" " withString:@""];
+
+    if(self.isIcon)
+    {
+        directory = [appDelgate.documentDirectoryPath stringByAppendingPathComponent:@"appIcons"];
+    }
+    else
+    {
+        directory = [appDelgate.documentDirectoryPath stringByAppendingPathComponent:@"appImages"];
+    }
     
-    NSString *appIconDirectory = [[documentsDirectoryForAppIcons absoluteString] stringByAppendingPathComponent:@"appIcons"];
-    NSURL* destinationUrlForAppIcon = [[NSURL URLWithString:appIconDirectory] URLByAppendingPathComponent:[NSString stringWithFormat:@"%@%@",trimmedString, @".png"]];
+    NSURL* destinationURL = [[NSURL URLWithString:directory] URLByAppendingPathComponent:[NSString stringWithFormat:@"%@%@",trimmedString, @".png"]];
     
     NSError *error1;
     
-    if([appIconFileManager fileExistsAtPath:[destinationUrlForAppIcon absoluteString]])
+    if([[NSFileManager defaultManager] fileExistsAtPath:[destinationURL absoluteString]])
     {
-        [appIconFileManager removeItemAtPath:[destinationUrlForAppIcon absoluteString] error:NULL];
+        [[NSFileManager defaultManager] removeItemAtPath:[destinationURL absoluteString] error:NULL];
     }
     
-    BOOL status = [appIconFileManager copyItemAtURL:location toURL:destinationUrlForAppIcon error:&error1];
+    BOOL status = [[NSFileManager defaultManager] copyItemAtPath:location.path  toPath:destinationURL.path error:&error1];
     if (status && !error1)
     {
-        
-        [appDelgate.downloadedIcons setValue:destinationUrlForAppIcon.path forKey:self.iconURL];
+        if(self.isIcon)
+        {
+            [appDelgate.iconDictionary setValue:destinationURL.path forKey:self.iconURL];
+        }
+        else
+        {
+            [appDelgate.imageDictionary setValue:destinationURL.path forKey:self.iconURL];
+        }
         
         if(self.completionHandler)
         {
-            self.completionHandler(destinationUrlForAppIcon);
+            self.completionHandler(destinationURL);
         }
     }
     else
@@ -79,7 +103,7 @@ AppDelegate *appDelgate;
     }
 }
 
--(void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task didCompleteWithError:(NSError *)error
+- (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task didCompleteWithError:(NSError *)error
 {
     if(error == nil)
     {

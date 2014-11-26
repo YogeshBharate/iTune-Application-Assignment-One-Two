@@ -7,12 +7,13 @@
 //
 
 #import "AppDelegate.h"
+#import "iTuneDataManager.h"
 
 @implementation AppDelegate
 
 Reachability *reachability;
-NSString *saveAppIconDictionaryPath;
-NSString *saveAppImageDictionaryPath;
+NSString *iconDictionaryPath;
+NSString *detailViewImageDictionaryPath;
 NSString *availableNetwork;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
@@ -21,61 +22,38 @@ NSString *availableNetwork;
     
     _documentDirectoryPath = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)[0];
     
-    saveAppIconDictionaryPath = [_documentDirectoryPath stringByAppendingPathComponent:@"IconDictionary.plist"];
-    _downloadedIcons = [[NSMutableDictionary alloc] initWithContentsOfFile:saveAppIconDictionaryPath];
+    iconDictionaryPath = [_documentDirectoryPath stringByAppendingPathComponent:@"IconDictionary.plist"];
+    _iconDictionary = [[NSMutableDictionary alloc] initWithContentsOfFile:iconDictionaryPath];
     
-    saveAppImageDictionaryPath = [_documentDirectoryPath stringByAppendingPathComponent:@"ImageDictionary.plist"];
-    _saveAppImageURLAndPathInFile = [[NSMutableDictionary alloc] initWithContentsOfFile:saveAppImageDictionaryPath];
-    
-    if(!_downloadedIcons)
+    detailViewImageDictionaryPath = [_documentDirectoryPath stringByAppendingPathComponent:@"ImageDictionary.plist"];
+    _imageDictionary = [[NSMutableDictionary alloc] initWithContentsOfFile:detailViewImageDictionaryPath];
+   
+    if(!_iconDictionary)
     {
-        _downloadedIcons = [[NSMutableDictionary alloc] init];
+        _iconDictionary = [[NSMutableDictionary alloc] init];
     }
     
-    if(!_saveAppImageURLAndPathInFile)
+    if(!_imageDictionary)
     {
-        _saveAppImageURLAndPathInFile = [[NSMutableDictionary alloc] init];
+        _imageDictionary = [[NSMutableDictionary alloc] init];
     }
     
     return YES;
 }
-							
-- (void)applicationWillResignActive:(UIApplication *)application
-{
-    // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
-    // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
-}
 
 - (void)applicationDidEnterBackground:(UIApplication *)application
 {
-    NSString *dictSavedFilePath = [_documentDirectoryPath stringByAppendingPathComponent:@"IconDictionary.plist"];
-    [_downloadedIcons writeToFile:dictSavedFilePath atomically:YES];
-    NSLog(@"dictionary : %@", _downloadedIcons);
-    
-    NSString *imageDictSaveFilePath = [_documentDirectoryPath stringByAppendingPathComponent:@"ImageDictionary.plist"];
-    [_saveAppImageURLAndPathInFile writeToFile:imageDictSaveFilePath atomically:YES];
-    NSLog(@"dictionary 2: %@", _saveAppImageURLAndPathInFile);
-}
-
-- (void)applicationWillEnterForeground:(UIApplication *)application
-{
-    
-    // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
-}
-
-- (void)applicationDidBecomeActive:(UIApplication *)application
-{
-    // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+    [_iconDictionary writeToFile:iconDictionaryPath atomically:YES];
+    [_imageDictionary writeToFile:detailViewImageDictionaryPath atomically:YES];
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application
 {
-    NSString *imageDictSaveFilePath = [_documentDirectoryPath stringByAppendingPathComponent:@"ImageDictionary.plist"];
-    [_saveAppImageURLAndPathInFile writeToFile:imageDictSaveFilePath atomically:YES];
-    NSLog(@"dictionary 2: %@", _saveAppImageURLAndPathInFile);
+    [_iconDictionary writeToFile:iconDictionaryPath atomically:YES];
+    [_imageDictionary writeToFile:detailViewImageDictionaryPath atomically:YES];
 }
 
--(void)setUpReachability
+- (void)setUpReachability
 {
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleNetworkChange:) name:kReachabilityChangedNotification object:nil];
     
@@ -86,20 +64,16 @@ NSString *availableNetwork;
     
     if(remoteHostStatus == NotReachable)
     {
-        NSLog(@"no");
         self.hasInternetConnection = NO;
     }
     else if(remoteHostStatus == ReachableViaWiFi)
     {
-        NSLog(@"wifi");
         self.hasInternetConnection = YES;
     }
     else if(remoteHostStatus == ReachableViaWWAN)
     {
-        NSLog(@"cell");
         self.hasInternetConnection = YES;
     }
-    
     
     if(!self.hasInternetConnection)
     {
@@ -108,26 +82,23 @@ NSString *availableNetwork;
     }
 }
 
--(void)handleNetworkChange:(NSNotification *)notice
+- (void)handleNetworkChange:(NSNotification *)notice
 {
     NetworkStatus remoteHostStatus = [reachability currentReachabilityStatus];
     NSString *availableNetwork ;
     
     if(remoteHostStatus == NotReachable)
     {
-        NSLog(@"no");
         self.hasInternetConnection = NO;
         availableNetwork = @"No network";
     }
     else if(remoteHostStatus == ReachableViaWiFi)
     {
-        NSLog(@"wifi");
         self.hasInternetConnection = YES;
         availableNetwork = @"Wifi";
     }
     else if(remoteHostStatus == ReachableViaWWAN)
     {
-        NSLog(@"cell");
         self.hasInternetConnection = YES;
         availableNetwork = @"WAN";
     }

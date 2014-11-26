@@ -9,12 +9,8 @@
 #import <Foundation/Foundation.h>
 #import "MasterViewController.h"
 
-@interface parseData : NSObject
+@interface iTuneDataManager : NSObject
 
-@property (nonatomic, strong) NSString *name;
-@property (nonatomic, strong) NSString *url;
-@property (nonatomic) NSMutableArray *applicationObjects;
-
--(instancetype)initWithJsonData:(NSDictionary *)jsonData;
+- (NSMutableArray *)populateApplicationInformationFromData:(NSData *)iTuneData;
 
 @end
