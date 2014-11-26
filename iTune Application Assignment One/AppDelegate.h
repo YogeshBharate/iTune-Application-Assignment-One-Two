@@ -12,13 +12,9 @@
 @interface AppDelegate : UIResponder <UIApplicationDelegate>
 
 @property (strong, nonatomic) UIWindow *window;
-
 @property (strong, nonatomic) NSMutableDictionary *downloadedIcons;
-
 @property (strong, nonatomic) NSMutableDictionary *saveAppImageURLAndPathInFile;
-
 @property (strong, nonatomic) NSString *documentDirectoryPath;
-
 @property (nonatomic, assign) BOOL hasInternetConnection ;
 
 @end

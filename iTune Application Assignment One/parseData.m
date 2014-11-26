@@ -18,6 +18,7 @@
     AppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
     
     self = [super init];
+    
     if(self)
     {
         if(jsonData)

@@ -9,11 +9,10 @@
 #import "AppDelegate.h"
 
 @implementation AppDelegate
-Reachability *reachability;
 
+Reachability *reachability;
 NSString *saveAppIconDictionaryPath;
 NSString *saveAppImageDictionaryPath;
-
 NSString *availableNetwork;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
@@ -56,11 +55,6 @@ NSString *availableNetwork;
     NSString *imageDictSaveFilePath = [_documentDirectoryPath stringByAppendingPathComponent:@"ImageDictionary.plist"];
     [_saveAppImageURLAndPathInFile writeToFile:imageDictSaveFilePath atomically:YES];
     NSLog(@"dictionary 2: %@", _saveAppImageURLAndPathInFile);
-    
-    
-    
-    // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later. 
-    // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application
@@ -79,10 +73,9 @@ NSString *availableNetwork;
     NSString *imageDictSaveFilePath = [_documentDirectoryPath stringByAppendingPathComponent:@"ImageDictionary.plist"];
     [_saveAppImageURLAndPathInFile writeToFile:imageDictSaveFilePath atomically:YES];
     NSLog(@"dictionary 2: %@", _saveAppImageURLAndPathInFile);
-    
 }
 
--(void) setUpReachability
+-(void)setUpReachability
 {
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleNetworkChange:) name:kReachabilityChangedNotification object:nil];
     
@@ -115,10 +108,11 @@ NSString *availableNetwork;
     }
 }
 
--(void) handleNetworkChange:(NSNotification *)notice
+-(void)handleNetworkChange:(NSNotification *)notice
 {
     NetworkStatus remoteHostStatus = [reachability currentReachabilityStatus];
     NSString *availableNetwork ;
+    
     if(remoteHostStatus == NotReachable)
     {
         NSLog(@"no");

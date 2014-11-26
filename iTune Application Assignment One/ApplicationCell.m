@@ -99,7 +99,7 @@ AppDelegate *appDelgate;
     self.detailTextLabel.font = [UIFont fontWithName:@"Helvetica" size:14];
     
     NSString *appIconStoredPath = [appDelgate.downloadedIcons valueForKey:_appData.iconURL];
-     UIImage *image = [UIImage imageWithContentsOfFile:appIconStoredPath];
+    UIImage *image = [UIImage imageWithContentsOfFile:appIconStoredPath];
     
     if(!image && appDelgate.hasInternetConnection )
     {

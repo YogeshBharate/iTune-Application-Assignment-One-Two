@@ -21,17 +21,14 @@
 @property (strong ,nonatomic) NSURLSession *session;
 @end
 
-
-
 @implementation ImageDownloader : NSObject
+
 // Application icon directory variables
 NSURL *documentsDirectoryForAppIcons;
 NSFileManager *appIconFileManager;
 NSURL *destinationUrlForAppIcons;
 UIImage *downloadAppIcons;
 AppDelegate *appDelgate;
-
-
 
 -(void)startDownloadingIcon:(NSString *)iconURL saveAs:(NSString *)name
 {
@@ -47,10 +44,8 @@ AppDelegate *appDelgate;
 
 -(void)stopDownloadingIcon:(NSNotification *) notification
 {
-
     [self.downloadTask cancel];
     [self.session invalidateAndCancel];
-
 }
 
 -(void)URLSession:(NSURLSession *)session downloadTask:(NSURLSessionDownloadTask *)downloadTask didFinishDownloadingToURL:(NSURL *)location
@@ -102,14 +97,4 @@ AppDelegate *appDelgate;
     [self.downloadTask cancel];
 }
 
-
-//-(void)URLSession:(NSURLSession *)session downloadTask:(NSURLSessionDownloadTask *)downloadTask didResumeAtOffset:(int64_t)fileOffset expectedTotalBytes:(int64_t)expectedTotalBytes
-//{
-//    
-//}
-//
-//-(void)URLSession:(NSURLSession *)session downloadTask:(NSURLSessionDownloadTask *)downloadTask didWriteData:(int64_t)bytesWritten totalBytesWritten:(int64_t)totalBytesWritten totalBytesExpectedToWrite:(int64_t)totalBytesExpectedToWrite
-//{
-//    
-//}
 @end

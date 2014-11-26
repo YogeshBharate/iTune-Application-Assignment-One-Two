@@ -14,7 +14,6 @@
 #define queue dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)
 
 @interface DetailViewController ()
-
 @end
 
 @implementation DetailViewController
@@ -33,9 +32,6 @@ NSURLSessionDownloadTask *downloadTask;
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
         appDelegate = [[UIApplication sharedApplication] delegate];
     
-    if (self) {
-        // Custom initialization
-    }
     return self;
 }
 
@@ -48,7 +44,6 @@ NSURLSessionDownloadTask *downloadTask;
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
 }
 
 - (IBAction)openURL:(id)sender
@@ -91,12 +86,11 @@ NSURLSessionDownloadTask *downloadTask;
     self.appArtistName.text = _applicationObject.artistName;
     self.appCategory.text = _applicationObject.category;
     
-     [_appURLLink setTitle:_applicationObject.URLLink forState:UIControlStateNormal];
+    [_appURLLink setTitle:_applicationObject.URLLink forState:UIControlStateNormal];
     
     self.appRights.text = _applicationObject.rights;
     self.appReleaseDate.text = _applicationObject.releaseDate;
     self.appPrice.text = _applicationObject.price;
-    
     
     NSString *appIconStoredPath = [appDelegate.saveAppImageURLAndPathInFile valueForKey:_applicationObject.imageURL];
     _appImage.image = [UIImage imageWithContentsOfFile:appIconStoredPath];
@@ -115,8 +109,6 @@ NSURLSessionDownloadTask *downloadTask;
         [animatedImageView stopAnimating];
     }
 }
-
-
 
 -(void)downloadAppImages
 {
@@ -184,7 +176,7 @@ NSURLSessionDownloadTask *downloadTask;
     
     if(![appImageFileManager createDirectoryAtURL:appImageURLPath withIntermediateDirectories:NO attributes:nil error:&error])
     {
-        NSLog(@"Error while creating appImages directory : %@", error);
+//        NSLog(@"Error while creating appImages directory : %@", error);
     }
 }
 

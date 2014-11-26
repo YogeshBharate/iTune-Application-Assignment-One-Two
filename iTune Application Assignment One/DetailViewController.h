@@ -21,7 +21,6 @@
 @property (weak, nonatomic) IBOutlet UILabel *appRights;
 @property (weak, nonatomic) IBOutlet UIButton *appURLLink;
 
-
 - (IBAction)openURL:(id)sender;
 
 @end
