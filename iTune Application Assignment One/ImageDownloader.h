@@ -15,8 +15,9 @@
 
 @property (strong, nonatomic) ApplicationCell *cell;
 @property (strong, nonatomic) ApplicationData *appData;
-
-- (void)startDownloadingIcon:(NSString *)iconURL saveAs:(NSString *)name isIcon:(BOOL)icon;
 @property (nonatomic, copy) void (^completionHandler)(NSURL *localPath);
+
+- (void)startDownloading:(NSString *)iconURL saveAs:(NSString *)name isIcon:(BOOL)icon;
+- (void)stopDownloading;
 
 @end

@@ -17,7 +17,7 @@
 
 @property (strong, nonatomic) NSURLSessionDownloadTask *downloadTask;
 @property (strong, nonatomic) NSString *fileName;
-@property (strong, nonatomic) NSString *iconURL;
+@property (strong, nonatomic) NSString *imageURL;
 @property(nonatomic) BOOL isIcon;
 @property (strong, nonatomic) NSMutableArray *downloadTasks;
 @property (strong ,nonatomic) NSURLSession *session;
@@ -26,18 +26,12 @@
 
 @implementation ImageDownloader : NSObject
 
-// Application icon directory variables
-NSURL *iconDocumentDirectory;
-NSURL *imageDocumentDirectory;
-NSFileManager *appIconFileManager;
-NSURL *destinationUrlForAppIcons;
-UIImage *downloadAppIcons;
 AppDelegate *appDelgate;
 
-- (void)startDownloadingIcon:(NSString *)iconURL saveAs:(NSString *)name isIcon:(BOOL)icon
+- (void)startDownloading:(NSString *)imageURL saveAs:(NSString *)name isIcon:(BOOL)icon
 {
     self.fileName = name;
-    self.iconURL  = iconURL;
+    self.imageURL  = imageURL;
     self.isIcon   = icon;
     
     NSURLSessionConfiguration *sessionConfig = [NSURLSessionConfiguration defaultSessionConfiguration];
@@ -46,12 +40,12 @@ AppDelegate *appDelgate;
     
     _session = [NSURLSession sessionWithConfiguration:sessionConfig delegate:self delegateQueue:nil];
     
-    self.downloadTask = [_session downloadTaskWithURL:[NSURL URLWithString:iconURL]];
+    self.downloadTask = [_session downloadTaskWithURL:[NSURL URLWithString:imageURL]];
 
     [_downloadTask resume];
 }
 
-- (void)stopDownloadingIcon:(NSNotification *) notification
+- (void)stopDownloading
 {
     [self.downloadTask cancel];
     [self.session invalidateAndCancel];
@@ -60,7 +54,7 @@ AppDelegate *appDelgate;
 - (void)URLSession:(NSURLSession *)session downloadTask:(NSURLSessionDownloadTask *)downloadTask didFinishDownloadingToURL:(NSURL *)location
 {
     NSString *directory;
-    NSString *trimmedString = [_fileName stringByReplacingOccurrencesOfString:@" " withString:@""];
+    NSString *fileNameWithoutWhiteSpace = [_fileName stringByReplacingOccurrencesOfString:@" " withString:@""];
 
     if(self.isIcon)
     {
@@ -71,7 +65,7 @@ AppDelegate *appDelgate;
         directory = [appDelgate.documentDirectoryPath stringByAppendingPathComponent:@"appImages"];
     }
     
-    NSURL* destinationURL = [[NSURL URLWithString:directory] URLByAppendingPathComponent:[NSString stringWithFormat:@"%@%@",trimmedString, @".png"]];
+    NSURL* destinationURL = [[NSURL URLWithString:directory] URLByAppendingPathComponent:[NSString stringWithFormat:@"%@%@",fileNameWithoutWhiteSpace, @".png"]];
     
     NSError *error1;
     
@@ -81,15 +75,16 @@ AppDelegate *appDelgate;
     }
     
     BOOL status = [[NSFileManager defaultManager] copyItemAtPath:location.path  toPath:destinationURL.path error:&error1];
+    
     if (status && !error1)
     {
         if(self.isIcon)
         {
-            [appDelgate.iconDictionary setValue:destinationURL.path forKey:self.iconURL];
+            [appDelgate.iconDictionary setValue:destinationURL.path forKey:self.imageURL];
         }
         else
         {
-            [appDelgate.imageDictionary setValue:destinationURL.path forKey:self.iconURL];
+            [appDelgate.imageDictionary setValue:destinationURL.path forKey:self.imageURL];
         }
         
         if(self.completionHandler)

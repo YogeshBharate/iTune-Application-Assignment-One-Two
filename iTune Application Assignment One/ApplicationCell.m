@@ -17,7 +17,6 @@
 #define kAppNameLabel_Margin_L     10.0
 #define queue dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)
 
-
 @class ImageDownloader;
 @interface ApplicationCell()
 
@@ -43,7 +42,7 @@ AppDelegate *appDelgate;
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     appDelgate = [[UIApplication sharedApplication] delegate];
     
-    [self createDirectoryToStoredAppIcons];
+    [self createDirectoryToStoreAppIcons];
     
     if (self)
     {
@@ -81,7 +80,7 @@ AppDelegate *appDelgate;
     return  tableView;
 }
 
--(void)refreshViews
+- (void)refreshViews
 {
     __weak ApplicationCell *weak = self;
     
@@ -107,7 +106,7 @@ AppDelegate *appDelgate;
                         });
                     };
                 }
-                [_imageDownloader startDownloadingIcon:_appData.iconURL saveAs:_appData.name isIcon:YES];
+                [_imageDownloader startDownloading:_appData.iconURL saveAs:_appData.name isIcon:YES];
             }
     }
     else if(image)
@@ -120,7 +119,7 @@ AppDelegate *appDelgate;
     }
 }
 
--(void)didMoveToSuperview
+- (void)didMoveToSuperview
 {
     if(self.superview)
     {
@@ -128,14 +127,14 @@ AppDelegate *appDelgate;
     }
 }
 
--(void)setApplicationData:(ApplicationData *)applicationData forIndexPath:(NSIndexPath *)indexPath
+- (void)setApplicationData:(ApplicationData *)applicationData forIndexPath:(NSIndexPath *)indexPath
 {
     _indexPath = indexPath;
     self.appData = applicationData;
     [self refreshViews];
 }
 
--(void)layoutSubviews
+- (void)layoutSubviews
 {
     CGRect contentViewFrame = self.contentView.frame;
     CGFloat imageHeight = 44;
@@ -160,12 +159,12 @@ AppDelegate *appDelgate;
     _detailLabel.frame = appDetailLabelFrame;
 }
 
--(UILabel *)detailTextLabel
+- (UILabel *)detailTextLabel
 {
     return self.detailLabel;
 }
 
--(void)createDirectoryToStoredAppIcons
+- (void)createDirectoryToStoreAppIcons
 {
     NSError *error;
     

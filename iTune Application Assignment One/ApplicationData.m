@@ -7,9 +7,11 @@
 
 @implementation ApplicationData
 
+#pragma mark - initialized & populate Json data
 - (instancetype)initWithJsonData:(NSDictionary *)jsonData
 {
     self = [super init];
+    
     if(self)
     {
         NSDictionary *label = jsonData[@"im:name"];
@@ -54,6 +56,7 @@
     return self;
 }
 
+#pragma mark - encode the applicationRecords
 - (void)encodeWithCoder:(NSCoder *)encoder
 {
     [encoder encodeObject:_name forKey:@"appName"];
@@ -67,17 +70,18 @@
     [encoder encodeObject:_category forKey:@"appCategory"];
 }
 
+#pragma mark - decode applicationRecords
 - (id)initWithCoder:(NSCoder *)decoder
 {
-    _name           = [decoder decodeObjectForKey:@"appName"];
-    _iconURL        = [decoder decodeObjectForKey:@"appIconUrl"];
-    _detailViewImageURL       = [decoder decodeObjectForKey:@"appImageUrl"];
-    _artistName     = [decoder decodeObjectForKey:@"appArtistName"];
-    _price          = [decoder decodeObjectForKey:@"appPrice"];
-    _releaseDate    = [decoder decodeObjectForKey:@"appReleaseDate"];
-    _link           = [decoder decodeObjectForKey:@"appLink"];
-    _rights         = [decoder decodeObjectForKey:@"appRights"];
-    _category       = [decoder decodeObjectForKey:@"appCategory"];
+    _name               = [decoder decodeObjectForKey:@"appName"];
+    _iconURL            = [decoder decodeObjectForKey:@"appIconUrl"];
+    _detailViewImageURL = [decoder decodeObjectForKey:@"appImageUrl"];
+    _artistName         = [decoder decodeObjectForKey:@"appArtistName"];
+    _price              = [decoder decodeObjectForKey:@"appPrice"];
+    _releaseDate        = [decoder decodeObjectForKey:@"appReleaseDate"];
+    _link               = [decoder decodeObjectForKey:@"appLink"];
+    _rights             = [decoder decodeObjectForKey:@"appRights"];
+    _category           = [decoder decodeObjectForKey:@"appCategory"];
     
     return self;
 }

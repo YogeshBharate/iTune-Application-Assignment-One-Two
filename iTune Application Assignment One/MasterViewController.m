@@ -30,8 +30,6 @@
 @implementation MasterViewController
 
 AppDelegate *appDelegate;
-//UIImage *largeImage ;
-
 static NSString *cellIdentifier = @"CellIdentifier";
 
 - (void)viewDidLoad
@@ -98,13 +96,13 @@ static NSString *cellIdentifier = @"CellIdentifier";
     [self.navigationController pushViewController:detailViewController animated:YES];
 }
 
--(void)loadIconForOnScreenRows
+- (void)loadIconForOnScreenRows
 {
     [self.tableView reloadData];
 }
 
 #pragma mark - ScrollingDelegates
--(void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
+- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
 {
     if(!decelerate)
     {
@@ -113,15 +111,15 @@ static NSString *cellIdentifier = @"CellIdentifier";
     }
 }
 
--(void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
+- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
 {
     [self loadIconForOnScreenRows];
 }
 
--(void)terminatePendingDownloading
+- (void)terminatePendingDownloading
 {
     ImageDownloader *imageDownloader = [[ImageDownloader alloc] init];
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"stopDownloadingIcon" object:imageDownloader];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"stopDownloading" object:imageDownloader];
 }
 
 #pragma mark - ParseDelegate
@@ -140,7 +138,7 @@ static NSString *cellIdentifier = @"CellIdentifier";
     }
 }
 
--(void)dealloc
+- (void)dealloc
 {
     [self terminatePendingDownloading];
 }

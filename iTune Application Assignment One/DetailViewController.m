@@ -129,7 +129,7 @@ NSURLSessionDownloadTask *downloadTask;
                 }
             };
         }
-        [self.imageDownloader startDownloadingIcon:_appRecord.detailViewImageURL saveAs:_appRecord.name isIcon:NO];
+        [self.imageDownloader startDownloading:_appRecord.detailViewImageURL saveAs:_appRecord.name isIcon:NO];
     }
     else if(!appDelegate.hasInternetConnection && !_appImage.image)
     {

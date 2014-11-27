@@ -8,6 +8,7 @@
 
 #ifndef iTune_Application_Assignment_One_ApplicationCell_h
 #define iTune_Application_Assignment_One_ApplicationCell_h
+
 #import "ApplicationData.h"
 
 @class ApplicationData;
