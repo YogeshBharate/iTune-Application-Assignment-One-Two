@@ -48,6 +48,7 @@ NSURLSessionDownloadTask *downloadTask;
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    appDelegate = [[UIApplication sharedApplication] delegate];
     [self createDirectoryToStoredAppImages];
 }
 

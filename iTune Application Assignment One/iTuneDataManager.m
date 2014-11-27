@@ -17,10 +17,10 @@
 {
     AppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
     NSMutableArray *applicationRecords = [NSMutableArray array];
-    NSDictionary *jsonData = [NSJSONSerialization JSONObjectWithData:iTuneData options:kNilOptions error:nil];
 
     if(iTuneData)
     {
+        NSDictionary *jsonData = [NSJSONSerialization JSONObjectWithData:iTuneData options:kNilOptions error:nil];
         NSDictionary * feed = jsonData[@"feed"];
         NSArray * entries = feed[@"entry"];
         

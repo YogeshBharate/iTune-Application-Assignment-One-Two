@@ -8,7 +8,6 @@
 //
 
 #import "MasterViewController.h"
-#import "AppDelegate.h"
 #import "DetailViewController.h"
 #import "ApplicationData.h"
 #import "ApplicationCell.h"
@@ -29,7 +28,6 @@
 
 @implementation MasterViewController
 
-AppDelegate *appDelegate;
 static NSString *cellIdentifier = @"CellIdentifier";
 
 - (void)viewDidLoad
@@ -37,7 +35,6 @@ static NSString *cellIdentifier = @"CellIdentifier";
     [super viewDidLoad];
     
     self.applicationRecords = [[NSMutableArray alloc] init];
-    appDelegate = [[UIApplication sharedApplication] delegate];
     
     [self.view addSubview:_loadingView];
     [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:cellIdentifier];
@@ -46,7 +43,7 @@ static NSString *cellIdentifier = @"CellIdentifier";
     
     [_loadingView setHidden:YES];
     [self.tableView reloadData];
-
+    
     // Parse json
     [self parseJSONData];
 }
@@ -70,12 +67,12 @@ static NSString *cellIdentifier = @"CellIdentifier";
     
     if(nodeCount == 0 && indexPath.row == 0)
     {
-     cell.textLabel.text = @"Loading...";
+        cell.textLabel.text = @"Loading...";
     }
     else
     {
-       ApplicationData *appObject = self.applicationRecords[indexPath.row];
-      
+        ApplicationData *appObject = self.applicationRecords[indexPath.row];
+        
         if(nodeCount > 0)
         {
             cell.isDecelerating = self.tableView.decelerating;
@@ -125,17 +122,13 @@ static NSString *cellIdentifier = @"CellIdentifier";
 #pragma mark - ParseDelegate
 - (void)parseJSONData
 {
-    if(appDelegate.hasInternetConnection)
-    {
-        dispatch_async(queue ,^{
-            NSData *iTuneApplicationData = [NSData dataWithContentsOfURL:JSONURL];
-            _applicationRecords = [[iTuneDataManager alloc] populateApplicationInformationFromData:iTuneApplicationData];
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [self.tableView reloadData];
-            });
+    dispatch_async(queue ,^{
+        NSData *iTuneApplicationData = [NSData dataWithContentsOfURL:JSONURL];
+        _applicationRecords = [[iTuneDataManager alloc] populateApplicationInformationFromData:iTuneApplicationData];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.tableView reloadData];
         });
-        
-    }
+    });
 }
 
 - (void)dealloc
