@@ -26,13 +26,15 @@
 
 @implementation ImageDownloader : NSObject
 
-AppDelegate *appDelgate;
+AppDelegate *appDelegate;
 
 - (void)startDownloading:(NSString *)imageURL saveAs:(NSString *)name isIcon:(BOOL)icon
 {
     self.fileName = name;
     self.imageURL  = imageURL;
     self.isIcon   = icon;
+    
+    appDelegate = [[UIApplication sharedApplication] delegate];
     
     NSURLSessionConfiguration *sessionConfig = [NSURLSessionConfiguration defaultSessionConfiguration];
     
@@ -58,11 +60,11 @@ AppDelegate *appDelgate;
 
     if(self.isIcon)
     {
-        directory = [appDelgate.documentDirectoryPath stringByAppendingPathComponent:@"appIcons"];
+        directory = [appDelegate.documentDirectoryPath stringByAppendingPathComponent:@"appIcons"];
     }
     else
     {
-        directory = [appDelgate.documentDirectoryPath stringByAppendingPathComponent:@"appImages"];
+        directory = [appDelegate.documentDirectoryPath stringByAppendingPathComponent:@"appImages"];
     }
     
     NSURL* destinationURL = [[NSURL URLWithString:directory] URLByAppendingPathComponent:[NSString stringWithFormat:@"%@%@",fileNameWithoutWhiteSpace, @".png"]];
@@ -80,11 +82,11 @@ AppDelegate *appDelgate;
     {
         if(self.isIcon)
         {
-            [appDelgate.iconDictionary setValue:destinationURL.path forKey:self.imageURL];
+            [appDelegate.iconDictionary setValue:destinationURL.path forKey:self.imageURL];
         }
         else
         {
-            [appDelgate.imageDictionary setValue:destinationURL.path forKey:self.imageURL];
+            [appDelegate.imageDictionary setValue:destinationURL.path forKey:self.imageURL];
         }
         
         if(self.completionHandler)
@@ -94,7 +96,7 @@ AppDelegate *appDelgate;
     }
     else
     {
-        NSLog(@"File copy failed: %@", [error1 localizedDescription]);
+//        NSLog(@"File copy failed: %@", [error1 localizedDescription]);
     }
 }
 
@@ -102,11 +104,11 @@ AppDelegate *appDelgate;
 {
     if(error == nil)
     {
-        NSLog(@"Task %@ completed successfully", task);
+//        NSLog(@"Task %@ completed successfully", task);
     }
     else
     {
-        NSLog(@"Task %@ completed with error : %@", task, [error localizedDescription]);
+//        NSLog(@"Task %@ completed with error : %@", task, [error localizedDescription]);
     }
     _downloadTask = nil;
 }

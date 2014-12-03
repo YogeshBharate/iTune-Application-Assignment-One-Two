@@ -7,10 +7,10 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "MasterViewController.h"
 
-@interface iTuneDataManager : NSObject
+@interface iTuneDataManager : NSObject <NSKeyedArchiverDelegate, NSKeyedUnarchiverDelegate>
 
 - (NSMutableArray *)populateApplicationInformationFromData:(NSData *)iTuneData;
+- (NSMutableArray *)loadApplicationRecordsFromFile:(NSString *)fileName;
 
 @end

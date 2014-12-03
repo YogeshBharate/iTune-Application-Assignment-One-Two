@@ -13,5 +13,7 @@
 @interface DetailViewController : UIViewController
 
 @property (nonatomic, strong) ApplicationData * appRecord;
+@property (nonatomic, strong) NSMutableArray *appRecords;
+@property (nonatomic) NSIndexPath *currentIndex;
 
 @end

@@ -7,22 +7,13 @@
 //
 
 #import "ApplicationCell.h"
-#import "ApplicationData.h"
+//#import "ApplicationData.h"
 #import "AppDelegate.h"
 #import "ImageDownloader.h"
-
-#define kAppNameLabel_Font         [UIFont fontWithName: @"Helvetica-Bold" size: 17.0]
-#define kAppNameSubtitle_Font         [UIFont fontWithName: @"Helvetica" size: 14.0]
-#define kAppIcon_Margin_L          10.0
-#define kAppNameLabel_Margin_L     10.0
-#define queue dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)
 
 @class ImageDownloader;
 @interface ApplicationCell()
 
-@property(nonatomic, strong) UILabel *appLabelName;
-@property(nonatomic, strong) IBOutlet UILabel *detailLabel;
-@property(nonatomic, strong) UIImageView *appIcon;
 @property(copy) void (^sessionCompletionHandler)();
 @property(nonatomic, strong) ImageDownloader *imageDownloader;
 @property(nonatomic, strong) ApplicationData *appData;
@@ -35,36 +26,8 @@
 
 @implementation ApplicationCell
 
-AppDelegate *appDelgate;
-
-- (id)initWithStyle: (UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
-{
-    self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
-    appDelgate = [[UIApplication sharedApplication] delegate];
-    
-    [self createDirectoryToStoreAppIcons];
-    
-    if (self)
-    {
-        self.autoresizingMask = UIViewAutoresizingFlexibleWidth |  UIViewAutoresizingFlexibleHeight;
-        self.contentView.autoresizingMask = UIViewAutoresizingFlexibleWidth |  UIViewAutoresizingFlexibleHeight;
-        
-        _appLabelName = [[UILabel alloc] initWithFrame: CGRectZero];
-        _appLabelName.numberOfLines = 0;
-        [_appLabelName setFont: kAppNameLabel_Font];
-        [self.contentView addSubview: _appLabelName];
-        
-        _detailLabel = [[UILabel alloc] initWithFrame: CGRectZero];
-        [_detailLabel setFont: kAppNameSubtitle_Font];
-        [self.contentView addSubview:_detailLabel];
-        
-        _appIcon = [[UIImageView alloc] initWithFrame: CGRectZero];
-        [_appIcon setBackgroundColor: [UIColor lightGrayColor]];
-        [self.contentView addSubview: _appIcon];
-    }
-    return self;
-}
-
+AppDelegate *appDelegate;
+   
 - (UITableView *)findParentTableView
 {
     UITableView *tableView = nil;
@@ -83,14 +46,23 @@ AppDelegate *appDelgate;
 - (void)refreshViews
 {
     __weak ApplicationCell *weak = self;
+    appDelegate = [[UIApplication sharedApplication] delegate];
+    
+    NSString *iconLocalPath = [appDelegate.documentDirectoryPath stringByAppendingPathComponent:@"appIcons"];
+    
+    if(![[NSFileManager defaultManager] fileExistsAtPath:iconLocalPath])
+    {
+        [self createDirectoryToStoreAppIcons];
+    }
     
     self.appLabelName.text = _appData.name;
-    self.detailTextLabel.text = _appData.artistName;
-    
-    NSString *appIconStoredPath = [appDelgate.iconDictionary valueForKey:_appData.iconURL];
+    self.detailLabel.text = _appData.artistName;
+    self.appIcon.image = [UIImage imageNamed:@"placeholder_image.png"];
+
+    NSString *appIconStoredPath = [appDelegate.iconDictionary valueForKey:_appData.iconURL];
     UIImage *image = [UIImage imageWithContentsOfFile:appIconStoredPath];
     
-    if(!image && appDelgate.hasInternetConnection )
+    if(!image && appDelegate.hasInternetConnection )
     {
             if(_isDecelerating == NO && _isDragging == NO)
             {
@@ -113,7 +85,7 @@ AppDelegate *appDelgate;
     {
         self.appIcon.image = image;
     }
-    else if(!appDelgate.hasInternetConnection)
+    else if(!appDelegate.hasInternetConnection)
     {
         self.appIcon.image = [UIImage imageNamed:@"image_loading.png"];
     }
@@ -132,36 +104,6 @@ AppDelegate *appDelgate;
     _indexPath = indexPath;
     self.appData = applicationData;
     [self refreshViews];
-}
-
-- (void)layoutSubviews
-{
-    CGRect contentViewFrame = self.contentView.frame;
-    CGFloat imageHeight = 44;
-    CGRect appIconFrame = _appIcon.frame;
-    appIconFrame.origin.x = kAppIcon_Margin_L;
-    appIconFrame.origin.y = (CGRectGetHeight(contentViewFrame) - imageHeight)/2;
-    appIconFrame.size = CGSizeMake(50, 50);
-    _appIcon.frame = appIconFrame;
-    
-    CGRect appNameLabelFrame = _appLabelName.frame;
-    appNameLabelFrame.origin.x = CGRectGetMaxX(appIconFrame) + kAppNameLabel_Margin_L;
-    appNameLabelFrame.origin.y = 10;
-    appNameLabelFrame.size.width = CGRectGetWidth(contentViewFrame) - CGRectGetMaxX(appIconFrame) - (2*kAppNameLabel_Margin_L);
-    appNameLabelFrame.size.height = CGRectGetHeight(contentViewFrame)/2 - 10;
-    _appLabelName.frame = appNameLabelFrame;
-    
-    CGRect appDetailLabelFrame = _detailLabel.frame;
-    appDetailLabelFrame.origin.x=CGRectGetMaxX(appIconFrame) + kAppNameLabel_Margin_L;
-    appDetailLabelFrame.origin.y=CGRectGetHeight(appNameLabelFrame)+10;
-    appDetailLabelFrame.size.width = CGRectGetWidth(contentViewFrame) - CGRectGetMaxX(appIconFrame) - (2*kAppNameLabel_Margin_L);
-    appDetailLabelFrame.size.height = CGRectGetHeight(contentViewFrame)/2-10;
-    _detailLabel.frame = appDetailLabelFrame;
-}
-
-- (UILabel *)detailTextLabel
-{
-    return self.detailLabel;
 }
 
 - (void)createDirectoryToStoreAppIcons

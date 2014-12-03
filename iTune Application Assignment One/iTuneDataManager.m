@@ -36,17 +36,16 @@
         
         if(!status)
         {
-            NSLog(@"Failured to Archive");
+//            NSLog(@"Failured to Archive");
         }
     }
-    else
-    {
-        NSString *loadApplicationObjectFromFile = [appDelegate.documentDirectoryPath stringByAppendingPathComponent:@"ApplicationData.plist"];
-        
-        applicationRecords = [NSKeyedUnarchiver unarchiveObjectWithFile:loadApplicationObjectFromFile];
-    }
-    
     return applicationRecords;
+}
+
+- (NSMutableArray *)loadApplicationRecordsFromFile:(NSString *)fileName
+{
+    NSMutableArray *appRecords = [NSKeyedUnarchiver unarchiveObjectWithFile:fileName];
+    return appRecords;
 }
 
 @end

@@ -15,6 +15,9 @@
 
 @interface ApplicationCell : UITableViewCell
 
+@property(nonatomic, strong) IBOutlet UILabel *appLabelName;
+@property(nonatomic, strong) IBOutlet UILabel *detailLabel;
+@property(nonatomic, strong) IBOutlet UIImageView *appIcon;
 @property (nonatomic, strong) ApplicationData * applicationData;
 @property (nonatomic) BOOL isDecelerating;
 @property (nonatomic) BOOL isDragging;

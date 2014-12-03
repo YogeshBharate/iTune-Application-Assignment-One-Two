@@ -7,7 +7,6 @@
 //
 
 #import "AppDelegate.h"
-#import "iTuneDataManager.h"
 
 @implementation AppDelegate
 
@@ -27,7 +26,7 @@ NSString *availableNetwork;
     
     detailViewImageDictionaryPath = [_documentDirectoryPath stringByAppendingPathComponent:@"ImageDictionary.plist"];
     _imageDictionary = [[NSMutableDictionary alloc] initWithContentsOfFile:detailViewImageDictionaryPath];
-   
+    
     if(!_iconDictionary)
     {
         _iconDictionary = [[NSMutableDictionary alloc] init];

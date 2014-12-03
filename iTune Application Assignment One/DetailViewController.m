@@ -27,6 +27,8 @@
 @property (weak, nonatomic) IBOutlet UILabel *appRights;
 @property (weak, nonatomic) IBOutlet UIButton *appURLLink;
 @property (strong, nonatomic) ImageDownloader *imageDownloader;
+@property (nonatomic, strong) NSIndexPath *prevIndex;
+@property (nonatomic, strong) NSIndexPath *nextIndex;
 
 @end
 
@@ -50,6 +52,40 @@ NSURLSessionDownloadTask *downloadTask;
     [super viewDidLoad];
     appDelegate = [[UIApplication sharedApplication] delegate];
     [self createDirectoryToStoredAppImages];
+    
+    // left swipe
+    UISwipeGestureRecognizer *leftSwipe1 = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(leftSwipe:)];
+    [leftSwipe1 setDirection:UISwipeGestureRecognizerDirectionLeft];
+    
+    // right Swipe
+    UISwipeGestureRecognizer *rightSwipe1 = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(rightSwipe:)];
+    [rightSwipe1 setDirection:UISwipeGestureRecognizerDirectionRight];
+    
+}
+
+#pragma mark - swipe
+- (IBAction)leftSwipe:(UISwipeGestureRecognizer *)sender
+{
+    
+    _nextIndex = [NSIndexPath indexPathForRow:self.currentIndex.row+1 inSection:0];
+    ApplicationData *data = self.appRecords[_nextIndex.row];
+    self.appRecord = data;
+    _currentIndex = _nextIndex;
+    NSLog(@"LEFT");
+}
+
+- (IBAction)rightSwipe:(UISwipeGestureRecognizer *)sender
+{
+    self.prevIndex = 0;
+    if (self.currentIndex.row!= 0)
+    {
+        _prevIndex = [NSIndexPath indexPathForRow:self.currentIndex.row-1 inSection:0];
+    }
+
+    ApplicationData *appData = self.appRecords[_prevIndex.row];
+    self.appRecord = appData;
+    _currentIndex = _prevIndex;
+    NSLog(@"RIGHT");
 }
 
 - (void)didReceiveMemoryWarning
@@ -57,6 +93,7 @@ NSURLSessionDownloadTask *downloadTask;
     [super didReceiveMemoryWarning];
 }
 
+#pragma mark - openURL
 - (IBAction)openURL:(id)sender
 {
     UIWebView *webview = [[UIWebView alloc] init];
@@ -64,6 +101,7 @@ NSURLSessionDownloadTask *downloadTask;
     [webview loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:_appRecord.link]]];
 }
 
+#pragma mark - setApplicationRecords
 - (void)setAppRecord:(ApplicationData *)appObject
 {
     animatedImageView = [[UIImageView alloc] initWithFrame:CGRectMake(50, 70, 232, 181)];
@@ -92,6 +130,7 @@ NSURLSessionDownloadTask *downloadTask;
     [self refreshViews];
 }
 
+#pragma mark - refresh the view
 - (void)refreshViews
 {
     __weak DetailViewController *weak = self;
@@ -139,6 +178,7 @@ NSURLSessionDownloadTask *downloadTask;
     }
 }
 
+#pragma mark - create AppImages directory
 - (void)createDirectoryToStoredAppImages
 {
     NSError *error;
@@ -156,6 +196,7 @@ NSURLSessionDownloadTask *downloadTask;
     }
 }
 
+#pragma mark - cancel download task
 - (void)dealloc
 {
     [downloadTask cancel];
