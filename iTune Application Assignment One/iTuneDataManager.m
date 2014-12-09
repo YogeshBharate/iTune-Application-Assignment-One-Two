@@ -17,6 +17,7 @@
 {
     AppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
     NSMutableArray *applicationRecords = [NSMutableArray array];
+//    self.appNames = [NSMutableArray array];
 
     if(iTuneData)
     {
@@ -28,6 +29,7 @@
         {
             ApplicationData * appObject = [[ApplicationData alloc] initWithJsonData:entry];
             [applicationRecords addObject: appObject];
+            [self.appNames addObject:appObject.name];
         }
         
         NSString *storedAppObjectInFile = [appDelegate.documentDirectoryPath stringByAppendingPathComponent:@"ApplicationData.plist"];
@@ -47,5 +49,11 @@
     NSMutableArray *appRecords = [NSKeyedUnarchiver unarchiveObjectWithFile:fileName];
     return appRecords;
 }
+
+- (NSMutableArray *)applicationNames
+{
+    return self.appNames;
+}
+
 
 @end

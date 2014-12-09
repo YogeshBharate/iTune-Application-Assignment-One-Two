@@ -9,6 +9,7 @@
 #import "ImageDownloader.h"
 #import "ApplicationData.h"
 #import "AppDelegate.h"
+#import "DetailViewController.h"
 
 @class ApplicationData;
 @class ApplicationCell;
@@ -112,6 +113,20 @@ AppDelegate *appDelegate;
     }
     _downloadTask = nil;
 }
+
+//- (void)URLSession:(NSURLSession *)session downloadTask:(NSURLSessionDownloadTask *)downloadTask didWriteData:(int64_t)bytesWritten totalBytesWritten:(int64_t)totalBytesWritten totalBytesExpectedToWrite:(int64_t)totalBytesExpectedToWrite
+//{
+//    if(!self.isIcon)
+//    {
+//        DetailViewController *detailViewController = [UIStoryboard instantiateViewControllerWithIdentifier:@"appDetailsViewController"];
+//        
+//        float progress = (double)totalBytesWritten / (double)totalBytesExpectedToWrite;
+//        
+//        dispatch_async(dispatch_get_main_queue(), ^{
+//            [detailViewController.progressView setProgress:progress];
+//        });
+//    }
+//}
 
 -(void)dealloc
 {

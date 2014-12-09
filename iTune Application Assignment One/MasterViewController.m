@@ -19,7 +19,7 @@
 
 @class ApplicationCell;
 
-@interface MasterViewController ()
+@interface MasterViewController () <UISearchBarDelegate, UISearchDisplayDelegate>
 
 @property(weak, nonatomic) IBOutlet UITableView *tableView;
 @property(nonatomic, strong) ApplicationCell *cell;
@@ -28,6 +28,9 @@
 @property (nonatomic, strong) UIView *loadingView;
 @property (nonatomic, retain) UILabel *loadingLabel;
 @property (nonatomic) NSMutableArray *applicationRecords;
+
+@property (nonatomic, strong) NSMutableArray *searchResult;
+@property (nonatomic, strong) IBOutlet UISearchBar *appSearchBar;
 
 @end
 
@@ -41,7 +44,9 @@ AppDelegate *appDelegate;
     [super viewDidLoad];
     
     self.applicationRecords = [[NSMutableArray alloc] init];
+    self.searchResult = [[NSMutableArray alloc] init];
     appDelegate = [[UIApplication sharedApplication] delegate];
+    
     [self.view addSubview:_loadingView];
     
     [_dataLoadingIndicator startAnimating];
@@ -79,6 +84,26 @@ AppDelegate *appDelegate;
     
     // Refresh the new objects
     [self parseJSONData];
+    
+    if([_applicationRecords count] > 0)
+    {
+        self.searchResult = [NSMutableArray arrayWithCapacity:[_applicationRecords count]];
+    }
+    self.searchDisplayController.searchResultsTableView.rowHeight = self.tableView.rowHeight;
+}
+
+- (void)filterContentForSearchText:(NSString *)searchText scope:(NSString *)scope
+{
+    [self.searchResult removeAllObjects];
+    NSPredicate *resultPredicate = [NSPredicate predicateWithFormat:@"SELF.name CONTAINS[c] %@", searchText];
+    
+    self.searchResult = [NSMutableArray arrayWithArray:[self.applicationRecords filteredArrayUsingPredicate:resultPredicate]];
+}
+
+- (BOOL)searchDisplayController:(UISearchDisplayController *)controller shouldReloadTableForSearchString:(NSString *)searchString
+{
+    [self filterContentForSearchText:searchString scope:[[self.searchDisplayController.searchBar scopeButtonTitles] objectAtIndex:[self.searchDisplayController.searchBar selectedScopeButtonIndex]]];
+    return YES;
 }
 
 - (void)didReceiveMemoryWarning
@@ -90,10 +115,17 @@ AppDelegate *appDelegate;
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     NSUInteger node = [self.applicationRecords count];
+    
     if(node == 0)
     {
         return  1;
     }
+    
+    if(tableView == self.searchDisplayController.searchResultsTableView)
+    {
+        return [self.searchResult count];
+    }
+    
     return node;
 }
 
@@ -105,20 +137,31 @@ AppDelegate *appDelegate;
     if(indexPath.row == 0 && nodeCount == 0)
     {
         cell = [self.tableView dequeueReusableCellWithIdentifier:cellIdentifier];
-        cell.appLabelName.text = @" ";
+        cell.appLabelName.text = @"";
         cell.detailLabel.text = @"";
     }
-    else
+    else if(tableView == self.tableView)
     {
         [_activityView stopAnimating];
         [_loadingView removeFromSuperview];
-        
         cell = [self.tableView dequeueReusableCellWithIdentifier:cellIdentifier];
         ApplicationData *appObject = self.applicationRecords[indexPath.row];
         cell.isDecelerating = self.tableView.decelerating;
         cell.isDragging = self.tableView.dragging;
         [cell setApplicationData:appObject forIndexPath:indexPath];
     }
+    else
+    {
+            cell = nil;
+            cell = [self.tableView dequeueReusableCellWithIdentifier:cellIdentifier];
+            ApplicationData *appObject = self.searchResult[indexPath.row];
+            NSLog(@"NAME : %@", appObject.name);
+            cell.isDecelerating = self.tableView.decelerating;
+            cell.isDragging = self.tableView.dragging;
+            cell.appLabelName.text = appObject.name;
+            [cell setApplicationData:appObject forIndexPath:indexPath];
+    }
+    
     return cell ;
 }
 
@@ -126,10 +169,20 @@ AppDelegate *appDelegate;
 {
     DetailViewController *detailViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"appDetailsViewController"];
     
+    if(tableView == self.tableView)
+    {
     ApplicationData *appObject = self.applicationRecords[indexPath.row];
     detailViewController.appRecord = appObject;
     detailViewController.appRecords = self.applicationRecords;
     detailViewController.currentIndex = indexPath;
+    }
+    else
+    {
+        ApplicationData *appObject = self.searchResult[indexPath.row];
+        detailViewController.appRecord = appObject;
+        detailViewController.appRecords = self.searchResult;
+        detailViewController.currentIndex = indexPath;
+    }
     
     [self.navigationController pushViewController:detailViewController animated:YES];
 }
@@ -162,13 +215,17 @@ AppDelegate *appDelegate;
 #pragma mark - ParseDelegate
 - (void)parseJSONData
 {
-    dispatch_async(queue ,^{
-        NSData *iTuneApplicationData = [NSData dataWithContentsOfURL:JSONURL];
-        _applicationRecords = [[iTuneDataManager alloc] populateApplicationInformationFromData:iTuneApplicationData];
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self.tableView reloadData];
+    if(appDelegate.hasInternetConnection)
+    {
+        dispatch_async(queue ,^{
+            NSData *iTuneApplicationData = [NSData dataWithContentsOfURL:JSONURL];
+            _applicationRecords = [[iTuneDataManager alloc] populateApplicationInformationFromData:iTuneApplicationData];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.tableView reloadData];
+            });
         });
-    });
+    }
+    
 }
 
 #pragma mark - load old application records
@@ -176,7 +233,6 @@ AppDelegate *appDelegate;
 {
     dispatch_async(queue, ^{
         _applicationRecords = [[iTuneDataManager alloc] loadApplicationRecordsFromFile:fileName];
-        
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.tableView reloadData];
         });

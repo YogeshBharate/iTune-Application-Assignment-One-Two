@@ -66,7 +66,6 @@ NSURLSessionDownloadTask *downloadTask;
 #pragma mark - swipe
 - (IBAction)leftSwipe:(UISwipeGestureRecognizer *)sender
 {
-    
     _nextIndex = [NSIndexPath indexPathForRow:self.currentIndex.row+1 inSection:0];
     ApplicationData *data = self.appRecords[_nextIndex.row];
     self.appRecord = data;

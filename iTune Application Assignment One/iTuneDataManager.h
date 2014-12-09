@@ -10,7 +10,10 @@
 
 @interface iTuneDataManager : NSObject <NSKeyedArchiverDelegate, NSKeyedUnarchiverDelegate>
 
+@property (nonatomic, strong) NSMutableArray *appNames;
+
 - (NSMutableArray *)populateApplicationInformationFromData:(NSData *)iTuneData;
 - (NSMutableArray *)loadApplicationRecordsFromFile:(NSString *)fileName;
+- (NSMutableArray *)applicationNames;
 
 @end
